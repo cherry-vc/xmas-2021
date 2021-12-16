@@ -1,0 +1,19 @@
+name: nft-ci
+
+on: push
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Install
+      run: npm ci
+    - name: Lint
+      run: npm run lint
+    - name: compile
+      run: npm run compile
