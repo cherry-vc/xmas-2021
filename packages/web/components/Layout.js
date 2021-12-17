@@ -50,6 +50,7 @@ const Content = styled('div', {
   top: '80px',
   bottom: 0,
   margin: 0,
+  width: '100%',
   backgroundColor: '#F6F0E4',
   overflowY: 'auto',
   scrollbarColor: 'gray transparent',
@@ -66,9 +67,9 @@ export default function Layout({ children }) {
             <LinkText active={router.pathname === '/' ? 'yes' : 'no'}>Gallery</LinkText>
           </Link>
           <Link href="/claim">
-            <LinkText active={router.pathname === '/claim' ? 'yes' : 'no'}> Claim</LinkText>
+            <LinkText active={router.pathname === '/claim' ? 'yes' : 'no'}>Claim</LinkText>
           </Link>
-          <WalletButton>Wallet</WalletButton>
+          <WalletButton>Open wallet</WalletButton>
         </NavContainer>
       </Header>
       <Content>{children}</Content>
