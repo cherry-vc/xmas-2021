@@ -132,13 +132,7 @@ export default function Claim() {
               <Button type="secondary" onClick={() => onKeepInCherrysVault()}>
                 Keep in Cherry's vault
               </Button>
-              <Button
-                disabled={!walletConnected}
-                state={!walletConnected ? 'disabled' : ''}
-                onClick={() => onSendToWallet()}
-              >
-                Send to wallet
-              </Button>
+              <Button onClick={() => onSendToWallet()}>Send to wallet</Button>
             </InputRow>
             <Text>
               Don't have a wallet yet? <a href="">Install one</a>

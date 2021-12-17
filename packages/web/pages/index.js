@@ -26,7 +26,6 @@ const Image = styled('img', {
 })
 
 const Fragments = styled('div', {
-  marginTop: '80px',
   display: 'flex',
   flexWrap: 'wrap',
   justifyContent: 'center',
@@ -34,13 +33,13 @@ const Fragments = styled('div', {
 })
 
 const Fragment = styled('div', {
-  width: '80px',
-  height: '80px',
+  width: '120px',
+  height: '120px',
 })
 
 const FragmentImage = styled('img', {
-  width: '80px',
-  height: '80px',
+  width: '120px',
+  height: '120px',
   variants: {
     state: {
       not_claimed: {
@@ -53,8 +52,8 @@ const FragmentImage = styled('img', {
         // nothing
       },
       listed: {
-        width: '72px',
-        height: '72px',
+        width: '108px',
+        height: '108px',
         padding: '3px',
         border: '3px solid blue',
       },
@@ -124,7 +123,7 @@ export default function Home() {
     },
   ]
 
-  const allFragements = JSON.parse(JSON.stringify(Array(5).fill(someFragments).flat()))
+  const allFragements = JSON.parse(JSON.stringify(Array(200).fill(someFragments).flat()))
   let i = 1
   allFragements.forEach((fragment) => (fragment.id = i++))
 
@@ -134,22 +133,10 @@ export default function Home() {
         <ArtContainer>
           <Artpiece>
             <Image src="https://upload.wikimedia.org/wikipedia/commons/9/99/Black_square.jpg"></Image>
-            <Fragments>
-              {allFragements.map((fragment) => {
-                return (
-                  <Fragment key={fragment.id}>
-                    {/* Use tooltip to show more info on fragment?
-                    https://react-component.github.io/tooltip/ */}
-                    <a href={fragment.openseaUrl} target="_blank">
-                      <FragmentImage
-                        src={fragment.state === 'not_claimed' ? 'cherry_logo.png' : fragment.imageUrl}
-                        state={fragment.state}
-                      ></FragmentImage>
-                    </a>
-                  </Fragment>
-                )
-              })}
-            </Fragments>
+            <Headline>Owned fragments</Headline>
+            <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
+            <Headline>Other fragments</Headline>
+            <Fragments>{getFragments(allFragements.filter((f) => f.state !== 'owned'))}</Fragments>
           </Artpiece>
         </ArtContainer>
         <Information>
@@ -185,5 +172,26 @@ export default function Home() {
         </Information>
       </Container>
     </Layout>
+  )
+}
+
+function getFragments(fragments) {
+  return (
+    <Fragments>
+      {fragments.map((fragment) => {
+        return (
+          <Fragment key={fragment.id}>
+            {/* Use tooltip to show more info on fragment?
+                    https://react-component.github.io/tooltip/ */}
+            <a href={fragment.openseaUrl} target="_blank">
+              <FragmentImage
+                src={fragment.state === 'not_claimed' ? 'cherry_logo.png' : fragment.imageUrl}
+                state={fragment.state}
+              ></FragmentImage>
+            </a>
+          </Fragment>
+        )
+      })}
+    </Fragments>
   )
 }
