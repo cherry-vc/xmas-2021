@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { styled } from '../stitches.config'
 import { useRouter } from 'next/router'
 
@@ -19,15 +20,17 @@ const NavContainer = styled('div', {
   marginLeft: 'auto',
 })
 
-const Link = styled('a', {
+const LinkText = styled('a', {
   color: 'black',
   margin: '15px',
   variants: {
     active: {
       yes: {
+        cursor: 'default',
         textDecoration: 'underline',
       },
       no: {
+        cursor: 'pointer',
         textDecoration: 'none',
       },
     },
@@ -59,11 +62,11 @@ export default function Layout({ children }) {
       <Header>
         <CherryLogo src="cherry_logo.png" />
         <NavContainer>
-          <Link href="/" active={router.pathname === '/' ? 'yes' : 'no'}>
-            Gallery
+          <Link href="/">
+            <LinkText active={router.pathname === '/' ? 'yes' : 'no'}>Gallery</LinkText>
           </Link>
-          <Link href="/claim" active={router.pathname === '/claim' ? 'yes' : 'no'}>
-            Claim
+          <Link href="/claim">
+            <LinkText active={router.pathname === '/claim' ? 'yes' : 'no'}> Claim</LinkText>
           </Link>
           <WalletButton>Wallet</WalletButton>
         </NavContainer>

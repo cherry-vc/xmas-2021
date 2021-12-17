@@ -1,5 +1,6 @@
 import { styled } from '../stitches.config'
 import Layout from '../components/Layout'
+import { useAppContext } from '../context/context'
 
 const Container = styled('div', {
   display: 'flex',
@@ -74,26 +75,32 @@ const Description = styled('p', {
 })
 
 export default function Home() {
+  const appContext = useAppContext()
+
   const someFragments = [
     {
+      id: 1,
       openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'not_claimed',
     },
     {
+      id: 2,
       openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'claimed',
     },
     {
+      id: 3,
       openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'owned',
     },
     {
+      id: 4,
       openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
@@ -101,7 +108,9 @@ export default function Home() {
     },
   ]
 
-  const allFragements = Array(5).fill(someFragments).flat()
+  const allFragements = JSON.parse(JSON.stringify(Array(5).fill(someFragments).flat()))
+  let i = 1
+  allFragements.forEach((fragment) => (fragment.id = i++))
 
   return (
     <Layout>
@@ -112,7 +121,7 @@ export default function Home() {
             <Fragments>
               {allFragements.map((fragment) => {
                 return (
-                  <Fragment>
+                  <Fragment key={fragment.id}>
                     {/* Use tooltip to show more info on fragment?
                     https://react-component.github.io/tooltip/ */}
                     <a href={fragment.openseaUrl} target="_blank">
