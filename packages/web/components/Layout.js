@@ -1,4 +1,5 @@
 import { styled } from '../stitches.config'
+import { useRouter } from 'next/router'
 
 const Header = styled('div', {
   display: 'flex',
@@ -21,7 +22,16 @@ const NavContainer = styled('div', {
 const Link = styled('a', {
   color: 'black',
   margin: '15px',
-  textDecoration: 'none',
+  variants: {
+    active: {
+      yes: {
+        textDecoration: 'underline',
+      },
+      no: {
+        textDecoration: 'none',
+      },
+    },
+  },
 })
 
 const WalletButton = styled('button', {
@@ -43,13 +53,18 @@ const Content = styled('div', {
 })
 
 export default function Layout({ children }) {
+  const router = useRouter()
   return (
     <div style={{ margin: 0 }}>
       <Header>
         <CherryLogo src="cherry_logo.png" />
         <NavContainer>
-          <Link href="/">Gallery</Link>
-          <Link href="/claim">Claim</Link>
+          <Link href="/" active={router.pathname === '/' ? 'yes' : 'no'}>
+            Gallery
+          </Link>
+          <Link href="/claim" active={router.pathname === '/claim' ? 'yes' : 'no'}>
+            Claim
+          </Link>
           <WalletButton>Wallet</WalletButton>
         </NavContainer>
       </Header>

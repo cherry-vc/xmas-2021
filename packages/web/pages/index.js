@@ -27,6 +27,8 @@ const Image = styled('img', {
 const Fragments = styled('div', {
   marginTop: '80px',
   display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'center',
   gap: '15px',
 })
 
@@ -38,6 +40,25 @@ const Fragment = styled('div', {
 const FragmentImage = styled('img', {
   width: '80px',
   height: '80px',
+  variants: {
+    state: {
+      not_claimed: {
+        // nothing
+      },
+      claimed: {
+        filter: 'grayscale(100%)',
+      },
+      owned: {
+        // nothing
+      },
+      listed: {
+        width: '72px',
+        height: '72px',
+        padding: '3px',
+        border: '3px solid blue',
+      },
+    },
+  },
 })
 
 const Information = styled('div', {
@@ -53,18 +74,35 @@ const Description = styled('p', {
 })
 
 export default function Home() {
-  const allFragements = [
+  const someFragments = [
     {
       openseaUrl: 'https://google.com',
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Black_square.jpg',
+      imageUrl:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
+      state: 'not_claimed',
+    },
+    {
+      openseaUrl: 'https://google.com',
+      imageUrl:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
+      state: 'claimed',
+    },
+    {
+      openseaUrl: 'https://google.com',
+      imageUrl:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'owned',
     },
     {
       openseaUrl: 'https://google.com',
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Black_square.jpg',
+      imageUrl:
+        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'listed',
     },
   ]
+
+  const allFragements = Array(5).fill(someFragments).flat()
+
   return (
     <Layout>
       <Container>
@@ -75,8 +113,13 @@ export default function Home() {
               {allFragements.map((fragment) => {
                 return (
                   <Fragment>
+                    {/* Use tooltip to show more info on fragment?
+                    https://react-component.github.io/tooltip/ */}
                     <a href={fragment.openseaUrl} target="_blank">
-                      <FragmentImage src={fragment.imageUrl}></FragmentImage>
+                      <FragmentImage
+                        src={fragment.state === 'not_claimed' ? 'cherry_logo.png' : fragment.imageUrl}
+                        state={fragment.state}
+                      ></FragmentImage>
                     </a>
                   </Fragment>
                 )
