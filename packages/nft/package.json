@@ -7,6 +7,7 @@
     "node": ">=12"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "4.4.1"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.3",
@@ -16,6 +17,7 @@
     "ethers": "^5.5.2",
     "glob": "^7.2.0",
     "hardhat": "^2.8.0",
+    "hardhat-contract-sizer": "^2.1.1",
     "hardhat-local-networks-config-plugin": "^0.0.6",
     "inquirer": "^8.2.0",
     "mocha-chai-jest-snapshot": "^1.1.3",
