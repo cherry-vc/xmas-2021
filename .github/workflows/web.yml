@@ -1,19 +1,33 @@
-name: web-ci
+name: ci:web
 
-on: push
+on:
+  push:
+    branches: master
+  pull_request:
+    paths:
+    - 'packages/web/**'
+
+defaults:
+  run:
+    working-directory: 'packages/web/**'
 
 jobs:
   CI:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Install node
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: 14
+        cache: 'npm'
+        cache-dependency-path: packages/web/package-lock.json
     - name: Install
       run: npm ci
     - name: Lint
       run: npm run lint
     - name: Build
       run: npm run build
+
+env:
+  CI: true
