@@ -51,7 +51,10 @@ const Input = styled('input', {
   width: '100%',
 })
 
-const Submit = styled('button', {})
+const Submit = styled('button', {
+  background: 'none',
+  border: 'none',
+})
 
 const Button = styled('button', {
   height: '30px',
@@ -119,7 +122,7 @@ export default function Claim() {
                 onChange={(event) => setPassword(event.target.value)}
               ></Input>
               <Submit onClick={onSubmitPassword}>
-                <FaChevronRight />
+                <FaChevronRight style={{ height: '30px' }} />
               </Submit>
             </InputRow>
           </Container>

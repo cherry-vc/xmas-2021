@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { styled } from '../stitches.config'
 import { useRouter } from 'next/router'
+import Dropdown from './Dropdown'
 
 const Header = styled('div', {
   display: 'flex',
@@ -37,14 +38,6 @@ const LinkText = styled('a', {
   },
 })
 
-const WalletButton = styled('button', {
-  height: '30px',
-  margin: '15px',
-  color: 'white',
-  backgroundColor: '#E64980',
-  border: 'none',
-})
-
 const Content = styled('div', {
   position: 'absolute',
   top: '80px',
@@ -69,7 +62,7 @@ export default function Layout({ children }) {
           <Link href="/claim">
             <LinkText active={router.pathname === '/claim' ? 'yes' : 'no'}>Claim</LinkText>
           </Link>
-          <WalletButton>Open wallet</WalletButton>
+          <Dropdown></Dropdown>
         </NavContainer>
       </Header>
       <Content>{children}</Content>
