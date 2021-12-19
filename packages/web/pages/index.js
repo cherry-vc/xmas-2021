@@ -18,7 +18,7 @@ const Artpiece = styled('div', {
   flexGrow: 1,
 })
 
-const Image = styled('img', {
+const Video = styled('video', {
   display: 'block',
   margin: 'auto',
   width: '100%',
@@ -132,7 +132,9 @@ export default function Home() {
       <Container>
         <ArtContainer>
           <Artpiece>
-            <Image src="https://upload.wikimedia.org/wikipedia/commons/9/99/Black_square.jpg"></Image>
+            <Video autoPlay="autoplay" loop muted>
+              <source src="/artpiece.mov" type="video/mp4" />
+            </Video>
             <Headline>Owned fragments</Headline>
             <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
             <Headline>Other fragments</Headline>
