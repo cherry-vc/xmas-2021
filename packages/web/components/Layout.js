@@ -54,7 +54,9 @@ export default function Layout({ children }) {
   return (
     <div style={{ margin: 0 }}>
       <Header>
-        <CherryLogo src="cherry_logo.png" />
+        <Link href="/" passHref>
+          <CherryLogo src="cherry_logo.png" />
+        </Link>
         <NavContainer>
           <Link href="/" passHref>
             <LinkText active={router.pathname === '/' ? 'yes' : 'no'}>Gallery</LinkText>

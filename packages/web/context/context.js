@@ -9,7 +9,7 @@ export function AppWrapper({ children }) {
   const onboard = useOnboard({
     options: {
       //   dappId: process.env.DAPP_ID, // optional API key
-      networkId: 1, // Ethereum network ID
+      networkId: 137,
       hideBranding: true,
     },
   })
