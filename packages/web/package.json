@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "license": "MIT",
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "dependencies": {
     "@stitches/react": "1.2.6",
@@ -12,7 +12,8 @@
     "next": "12.0.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-icons": "4.3.1"
+    "react-icons": "4.3.1",
+    "use-onboard": "^0.2.8"
   },
   "devDependencies": {
     "eslint": "8.4.1",

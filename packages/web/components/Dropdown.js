@@ -25,16 +25,17 @@ export default function Dropdown() {
     connectWallet('')
   }
 
-  const usePassword = (event) => {
+  const claimWithPassword = (event) => {
     event.syntheticEvent.preventDefault()
     console.log('Password')
+    // TODO: what to actually do here?
     router.push(`/claim?method=hold`)
   }
 
   return (
     <Menu menuButton={<WalletButton>{walletConnected ? walletAddress : 'Open menu'}</WalletButton>}>
       <MenuItem onClick={(event) => connectToWallet(event)}>Wallet</MenuItem>
-      <MenuItem onClick={(event) => usePassword(event)}>Password</MenuItem>
+      <MenuItem onClick={(event) => claimWithPassword(event)}>Password</MenuItem>
     </Menu>
   )
 }

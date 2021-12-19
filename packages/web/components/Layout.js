@@ -56,10 +56,10 @@ export default function Layout({ children }) {
       <Header>
         <CherryLogo src="cherry_logo.png" />
         <NavContainer>
-          <Link href="/">
+          <Link href="/" passHref>
             <LinkText active={router.pathname === '/' ? 'yes' : 'no'}>Gallery</LinkText>
           </Link>
-          <Link href="/claim">
+          <Link href="/claim" passHref>
             <LinkText active={router.pathname === '/claim' ? 'yes' : 'no'}>Claim</LinkText>
           </Link>
           <Dropdown></Dropdown>

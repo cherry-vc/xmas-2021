@@ -185,7 +185,7 @@ function getFragments(fragments) {
           <Fragment key={fragment.id}>
             {/* Use tooltip to show more info on fragment?
                     https://react-component.github.io/tooltip/ */}
-            <a href={fragment.openseaUrl} target="_blank">
+            <a href={fragment.openseaUrl} target="_blank" rel="noopener noreferrer nofollow">
               <FragmentImage
                 src={fragment.state === 'not_claimed' ? 'cherry_logo.png' : fragment.imageUrl}
                 state={fragment.state}
