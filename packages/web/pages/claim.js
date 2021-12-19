@@ -80,7 +80,7 @@ const Button = styled('button', {
 })
 
 export default function Claim() {
-  const { claimedPieces, addClaimedPiece, walletConnected } = useAppContext()
+  const { claimedPieces, addClaimedPiece, onboard } = useAppContext()
   const [password, setPassword] = useState('')
   const [page, setPage] = useState('PASSWORD', 'CLAIM', 'DONE')
   const { query } = useRouter()

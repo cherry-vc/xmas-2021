@@ -90,7 +90,7 @@ const Separator = styled('hr', {
 })
 
 export default function Home() {
-  const { claimedPieces, addClaimedPiece } = useAppContext()
+  const { claimedPieces, addClaimedPiece, onboard } = useAppContext()
 
   const someFragments = [
     {

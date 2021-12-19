@@ -6,8 +6,11 @@ import { useAppContext } from '../context/context'
 
 const WalletButton = styled('button', {
   height: '30px',
-  minWidth: '80px',
+  width: '80px',
   margin: '15px',
+  padding: '0 15px 0 15px',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
   color: 'white',
   backgroundColor: '#E64980',
   border: 'none',
@@ -16,25 +19,27 @@ const WalletButton = styled('button', {
 
 export default function Dropdown() {
   const router = useRouter()
-  const { walletConnected, walletAddress, connectWallet } = useAppContext()
+  const { onboard } = useAppContext()
 
-  const connectToWallet = (event) => {
-    console.log(event)
+  const connectToWallet = async (event) => {
     event.syntheticEvent.preventDefault()
-    console.log('Wallet')
-    connectWallet('')
+    try {
+      await onboard.selectWallet()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const claimWithPassword = (event) => {
     event.syntheticEvent.preventDefault()
-    console.log('Password')
-    // TODO: what to actually do here?
+    //   TODO: what to actually do here?
     router.push(`/claim?method=hold`)
   }
 
   return (
-    <Menu menuButton={<WalletButton>{walletConnected ? walletAddress : 'Open menu'}</WalletButton>}>
-      <MenuItem onClick={(event) => connectToWallet(event)}>Wallet</MenuItem>
+    <Menu menuButton={<WalletButton>{onboard.isWalletSelected ? onboard.address : 'Wallet'}</WalletButton>}>
+      {!onboard.isWalletSelected && <MenuItem onClick={(event) => connectToWallet(event)}>Connect Wallet</MenuItem>}
+      {onboard.isWalletSelected && <MenuItem onClick={() => onboard.disconnectWallet()}>Disconnect Wallet</MenuItem>}
       <MenuItem onClick={(event) => claimWithPassword(event)}>Password</MenuItem>
     </Menu>
   )
