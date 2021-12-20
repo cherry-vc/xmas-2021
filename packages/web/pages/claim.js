@@ -1,4 +1,3 @@
-import Layout from '../components/Layout'
 import { useAppContext } from '../context/context'
 import { FaChevronRight } from 'react-icons/fa'
 import { styled } from '../stitches.config'
@@ -109,48 +108,44 @@ export default function Claim() {
   }
 
   return (
-    <Layout>
-      <CenterWrapper>
-        {page === 'PASSWORD' && (
-          <Container>
-            <Square></Square>
-            <Headline>Claim your holiday gift.</Headline>
-            <InputRow>
-              <Input
-                placeholder="Enter your password"
-                defaultValue={password}
-                onChange={(event) => setPassword(event.target.value)}
-              ></Input>
-              <Submit onClick={onSubmitPassword}>
-                <FaChevronRight style={{ height: '30px' }} />
-              </Submit>
-            </InputRow>
-          </Container>
-        )}
-        {page === 'CLAIM' && (
-          <Container>
-            <Headline>Santa's on his way!</Headline>
-            <Text>He just needs to know where to drop it off!</Text>
-            <InputRow>
-              <Button type="secondary" onClick={() => onKeepInCherrysVault()}>
-                Keep in Cherry's vault
-              </Button>
-              <Button onClick={() => onSendToWallet()}>Send to wallet</Button>
-            </InputRow>
-            <Text>
-              Don't have a wallet yet? <a href="">Install one</a>
-            </Text>
-          </Container>
-        )}
-        {page === 'DONE' && (
-          <Container>
-            <Headline>Your fragment</Headline>
-            <Square></Square>
-          </Container>
-        )}
-      </CenterWrapper>
-      {/* <p>claimedPieces: {claimedPieces}</p>
-      <button onClick={() => addClaimedPiece(2)}>Claim</button> */}
-    </Layout>
+    <CenterWrapper>
+      {page === 'PASSWORD' && (
+        <Container>
+          <Square></Square>
+          <Headline>Claim your holiday gift.</Headline>
+          <InputRow>
+            <Input
+              placeholder="Enter your password"
+              defaultValue={password}
+              onChange={(event) => setPassword(event.target.value)}
+            ></Input>
+            <Submit onClick={onSubmitPassword}>
+              <FaChevronRight style={{ height: '30px' }} />
+            </Submit>
+          </InputRow>
+        </Container>
+      )}
+      {page === 'CLAIM' && (
+        <Container>
+          <Headline>Santa's on his way!</Headline>
+          <Text>He just needs to know where to drop it off!</Text>
+          <InputRow>
+            <Button type="secondary" onClick={() => onKeepInCherrysVault()}>
+              Keep in Cherry's vault
+            </Button>
+            <Button onClick={() => onSendToWallet()}>Send to wallet</Button>
+          </InputRow>
+          <Text>
+            Don't have a wallet yet? <a href="">Install one</a>
+          </Text>
+        </Container>
+      )}
+      {page === 'DONE' && (
+        <Container>
+          <Headline>Your fragment</Headline>
+          <Square></Square>
+        </Container>
+      )}
+    </CenterWrapper>
   )
 }

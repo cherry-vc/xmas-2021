@@ -1,5 +1,4 @@
 import { styled } from '../stitches.config'
-import Layout from '../components/Layout'
 import { useAppContext } from '../context/context'
 
 const Container = styled('div', {
@@ -128,52 +127,50 @@ export default function Home() {
   allFragements.forEach((fragment) => (fragment.id = i++))
 
   return (
-    <Layout>
-      <Container>
-        <ArtContainer>
-          <Artpiece>
-            <Video autoPlay="autoplay" loop muted>
-              <source src="/artpiece.mov" type="video/mp4" />
-            </Video>
-            <Headline>Owned fragments</Headline>
-            <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
-            <Headline>Other fragments</Headline>
-            <Fragments>{getFragments(allFragements.filter((f) => f.state !== 'owned'))}</Fragments>
-          </Artpiece>
-        </ArtContainer>
-        <Information>
-          <Headline>Holiday 2021</Headline>
-          <Text css={{ marginBottom: '15px' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur.
-          </Text>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <Text type="label">Artist:</Text>
-                </td>
-                <td>
-                  <Text>Ari Garcia</Text>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Text type="label">Date:</Text>
-                </td>
-                <td>
-                  <Text>December 2021</Text>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <Separator />
-          <Text>You hold {claimedPieces.length}/600 fragments</Text>
-        </Information>
-      </Container>
-    </Layout>
+    <Container>
+      <ArtContainer>
+        <Artpiece>
+          <Video autoPlay="autoplay" loop muted>
+            <source src="/artpiece.mov" type="video/mp4" />
+          </Video>
+          <Headline>Owned fragments</Headline>
+          <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
+          <Headline>Other fragments</Headline>
+          <Fragments>{getFragments(allFragements.filter((f) => f.state !== 'owned'))}</Fragments>
+        </Artpiece>
+      </ArtContainer>
+      <Information>
+        <Headline>Holiday 2021</Headline>
+        <Text css={{ marginBottom: '15px' }}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur.
+        </Text>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <Text type="label">Artist:</Text>
+              </td>
+              <td>
+                <Text>Ari Garcia</Text>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <Text type="label">Date:</Text>
+              </td>
+              <td>
+                <Text>December 2021</Text>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <Separator />
+        <Text>You hold {claimedPieces.length}/600 fragments</Text>
+      </Information>
+    </Container>
   )
 }
 
