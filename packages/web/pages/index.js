@@ -1,27 +1,54 @@
 import { styled } from '../stitches.config'
 import { useAppContext } from '../context/context'
 
+const Wrapper = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+})
+
 const Container = styled('div', {
   display: 'flex',
   justifyContent: 'space-between',
   margin: 0,
 })
 
-const ArtContainer = styled('div', {
+const VideoContainer = styled('div', {
   width: '100%',
-  padding: '0 80px 80px 80px',
-})
-
-const Artpiece = styled('div', {
-  width: '100%',
-  flexGrow: 1,
+  padding: '0 80px 0 80px',
 })
 
 const Video = styled('video', {
   display: 'block',
   margin: 'auto',
   width: '100%',
+  minWidth: '100px',
   maxWidth: '600px',
+})
+
+const Information = styled('div', {
+  paddingRight: '80px',
+  minWidth: '300px',
+  maxWidth: '30%',
+})
+
+const Text = styled('p', {
+  color: '#000000',
+  opacity: 0.5,
+  margin: 0,
+
+  variants: {
+    type: {
+      label: {
+        opacity: 1,
+      },
+    },
+  },
+})
+
+const Headline = styled('h1', {})
+
+const FragmentContainer = styled('div', {
+  margin: '80px',
 })
 
 const Fragments = styled('div', {
@@ -55,28 +82,6 @@ const FragmentImage = styled('img', {
         height: '108px',
         padding: '3px',
         border: '3px solid blue',
-      },
-    },
-  },
-})
-
-const Information = styled('div', {
-  paddingRight: '80px',
-  minWidth: '300px',
-  maxWidth: '30%',
-})
-
-const Headline = styled('h1', {})
-
-const Text = styled('p', {
-  color: '#000000',
-  opacity: 0.5,
-  margin: 0,
-
-  variants: {
-    type: {
-      label: {
-        opacity: 1,
       },
     },
   },
@@ -127,50 +132,52 @@ export default function Home() {
   allFragements.forEach((fragment) => (fragment.id = i++))
 
   return (
-    <Container>
-      <ArtContainer>
-        <Artpiece>
+    <Wrapper>
+      <Container>
+        <VideoContainer>
           <Video autoPlay="autoplay" loop muted>
             <source src="/artpiece.mov" type="video/mp4" />
           </Video>
-          <Headline>Owned fragments</Headline>
-          <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
-          <Headline>Other fragments</Headline>
-          <Fragments>{getFragments(allFragements.filter((f) => f.state !== 'owned'))}</Fragments>
-        </Artpiece>
-      </ArtContainer>
-      <Information>
-        <Headline>Holiday 2021</Headline>
-        <Text css={{ marginBottom: '15px' }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur.
-        </Text>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <Text type="label">Artist:</Text>
-              </td>
-              <td>
-                <Text>Ari Garcia</Text>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <Text type="label">Date:</Text>
-              </td>
-              <td>
-                <Text>December 2021</Text>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <Separator />
-        <Text>You hold {claimedPieces.length}/600 fragments</Text>
-      </Information>
-    </Container>
+        </VideoContainer>
+        <Information>
+          <Headline>Holiday 2021</Headline>
+          <Text css={{ marginBottom: '15px' }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur.
+          </Text>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <Text type="label">Artist:</Text>
+                </td>
+                <td>
+                  <Text>Ari Garcia</Text>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Text type="label">Date:</Text>
+                </td>
+                <td>
+                  <Text>December 2021</Text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <Separator />
+          <Text>You hold {claimedPieces.length}/600 fragments</Text>
+        </Information>
+      </Container>
+      <FragmentContainer>
+        <Headline>Owned fragments</Headline>
+        <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
+        <Headline>Other fragments</Headline>
+        <Fragments>{getFragments(allFragements.filter((f) => f.state !== 'owned'))}</Fragments>
+      </FragmentContainer>
+    </Wrapper>
   )
 }
 
