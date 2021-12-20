@@ -64,7 +64,7 @@ export default function Layout({ children }) {
           <Link href="/claim" passHref>
             <LinkText active={router.pathname === '/claim' ? 'yes' : 'no'}>Claim</LinkText>
           </Link>
-          <Dropdown></Dropdown>
+          <Dropdown />
         </NavContainer>
       </Header>
       <Content>{children}</Content>

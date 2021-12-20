@@ -1,8 +1,9 @@
 import { styled } from '../stitches.config'
 import { Menu, MenuItem } from '@szhsin/react-menu'
 import '@szhsin/react-menu/dist/index.css'
-import { useRouter } from 'next/router'
 import { useAppContext } from '../context/context'
+import PasswordClaimModal from './PasswordClaimModal'
+import { useState } from 'react'
 
 const WalletButton = styled('button', {
   height: '30px',
@@ -18,8 +19,8 @@ const WalletButton = styled('button', {
 })
 
 export default function Dropdown() {
-  const router = useRouter()
   const { onboard } = useAppContext()
+  const [isOpen, setOpen] = useState(false)
 
   const connectToWallet = async (event) => {
     event.syntheticEvent.preventDefault()
@@ -30,17 +31,18 @@ export default function Dropdown() {
     }
   }
 
-  const claimWithPassword = (event) => {
-    event.syntheticEvent.preventDefault()
-    //   TODO: what to actually do here?
-    router.push(`/claim?method=hold`)
+  const handleClick = () => {
+    // This method is also called when the modal is closed -> weird bug?
+    if (!isOpen) setOpen(true)
   }
 
   return (
     <Menu menuButton={<WalletButton>{onboard.isWalletSelected ? onboard.address : 'Wallet'}</WalletButton>}>
       {!onboard.isWalletSelected && <MenuItem onClick={(event) => connectToWallet(event)}>Connect Wallet</MenuItem>}
       {onboard.isWalletSelected && <MenuItem onClick={() => onboard.disconnectWallet()}>Disconnect Wallet</MenuItem>}
-      <MenuItem onClick={(event) => claimWithPassword(event)}>Password</MenuItem>
+      <MenuItem onClick={() => handleClick()}>
+        <PasswordClaimModal isOpen={isOpen} setOpen={setOpen} />
+      </MenuItem>
     </Menu>
   )
 }
