@@ -6,9 +6,9 @@ import PasswordClaimModal from './PasswordClaimModal'
 import { useState } from 'react'
 
 const WalletButton = styled('button', {
-  height: '30px',
-  width: '80px',
-  margin: '15px',
+  height: '35px',
+  width: '110px',
+  margin: '15px 30px 15px 15px',
   padding: '0 15px 0 15px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -37,7 +37,7 @@ export default function Dropdown() {
   }
 
   return (
-    <Menu menuButton={<WalletButton>{onboard.isWalletSelected ? onboard.address : 'Wallet'}</WalletButton>}>
+    <Menu menuButton={<WalletButton>{onboard.isWalletSelected ? onboard.address : 'Open Wallet'}</WalletButton>}>
       {!onboard.isWalletSelected && <MenuItem onClick={(event) => connectToWallet(event)}>Connect Wallet</MenuItem>}
       {onboard.isWalletSelected && <MenuItem onClick={() => onboard.disconnectWallet()}>Disconnect Wallet</MenuItem>}
       <MenuItem onClick={() => handleClick()}>

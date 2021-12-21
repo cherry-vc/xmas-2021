@@ -13,8 +13,8 @@ const Header = styled('div', {
 })
 
 const CherryLogo = styled('img', {
-  margin: '15px',
-  height: '50px',
+  margin: '15px 15px 15px 30px',
+  height: '35px',
 })
 
 const NavContainer = styled('div', {

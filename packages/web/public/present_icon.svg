@@ -1,0 +1,19 @@
+
+<svg width="25px" height="24px" viewBox="0 0 25 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.688956124" stroke-linejoin="round">
+        <g id="Collection" transform="translate(-236.000000, -952.000000)" stroke="#FFFFFF">
+            <g id="Group-14" transform="translate(174.000000, 785.500000)">
+                <g id="Group-5" transform="translate(0.000000, 104.000000)">
+                    <g id="Group" transform="translate(63.000000, 63.000000)">
+                        <polygon id="Stroke-843" points="23 10.4999 0 10.4999 0 6.4999 23 6.4999"></polygon>
+                        <polygon id="Stroke-844" points="22 22.4999 1 22.4999 1 10.4999 22 10.4999"></polygon>
+                        <line x1="8" y1="6.4999" x2="8" y2="22.4999" id="Stroke-845"></line>
+                        <line x1="15" y1="22.4999" x2="15" y2="6.4999" id="Stroke-846"></line>
+                        <path d="M17.1572,4.268 C16.1802,5.245 11.5002,6.389 11.5002,6.389 C11.5002,6.389 12.6442,1.708 13.6212,0.732 C14.5972,-0.244 16.1802,-0.244 17.1572,0.732 C18.1332,1.708 18.1332,3.291 17.1572,4.268 L17.1572,4.268 Z" id="Stroke-847" stroke-linecap="round"></path>
+                        <path d="M5.8428,4.268 C6.8198,5.245 11.4998,6.389 11.4998,6.389 C11.4998,6.389 10.3548,1.708 9.3788,0.732 C8.4028,-0.244 6.8198,-0.244 5.8428,0.732 C4.8668,1.708 4.8658,3.291 5.8428,4.268 L5.8428,4.268 Z" id="Stroke-848" stroke-linecap="round"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

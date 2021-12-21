@@ -9,6 +9,7 @@ const Wrapper = styled('div', {
 const Container = styled('div', {
   display: 'flex',
   justifyContent: 'space-between',
+  alignItems: 'center',
   margin: 0,
 })
 
@@ -35,6 +36,7 @@ const Text = styled('p', {
   color: '#000000',
   opacity: 0.5,
   margin: 0,
+  padding: 0,
 
   variants: {
     type: {
@@ -45,7 +47,23 @@ const Text = styled('p', {
   },
 })
 
+const Hyperlink = styled('a', {
+  color: '#E64980',
+  opacity: 1,
+  cursor: 'pointer',
+  textDecoration: 'underline',
+})
+
 const Headline = styled('h1', {})
+
+const SubHeadline = styled('h3', {
+  paddingRight: '10px',
+  display: 'inline',
+})
+
+const HeadlineContainer = styled('div', {
+  padding: '20px 0',
+})
 
 const FragmentContainer = styled('div', {
   margin: '80px',
@@ -69,27 +87,47 @@ const FragmentImage = styled('img', {
   variants: {
     state: {
       not_claimed: {
-        // nothing
-      },
-      claimed: {
-        filter: 'grayscale(100%)',
-      },
-      owned: {
-        // nothing
-      },
-      listed: {
-        width: '114px',
-        height: '114px',
-        // padding: '3px',
-        border: '3px solid blue',
+        // gift icon
+        filter: 'blur(10px)',
+        transform: 'scale(0.85)',
       },
     },
   },
 })
 
+const GiftImage = styled('img', {
+  opacity: 0.65,
+  position: 'relative',
+  top: '0px',
+  left: '0px',
+  padding: '45px',
+  height: '30px',
+  width: '30px',
+  filter: 'none',
+  transform: 'translate(0px, -124px)',
+  backgroundColor: 'black',
+})
+
 const FragmentId = styled('div', {
   color: 'White',
-  transform: 'translate(5px, -24px)',
+  width: '28px',
+  height: '23px',
+  textAlign: 'center',
+  paddingTop: '6px',
+  transform: 'translate(92px, -33px)',
+  variants: {
+    state: {
+      not_claimed: {
+        display: 'none',
+      },
+      claimed: {
+        background: 'black',
+      },
+      owned: {
+        background: '#E64980',
+      },
+    },
+  },
 })
 
 const Separator = styled('hr', {
@@ -101,40 +139,41 @@ const Separator = styled('hr', {
 export default function Home() {
   const { claimedPieces, addClaimedPiece, onboard } = useAppContext()
 
+  const connectToWallet = async () => {
+    try {
+      await onboard.selectWallet()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const someFragments = [
     {
       id: 1,
-      openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'not_claimed',
     },
     {
       id: 2,
-      openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'claimed',
     },
     {
       id: 3,
-      openseaUrl: 'https://google.com',
       imageUrl:
         'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
       state: 'owned',
     },
-    {
-      id: 4,
-      openseaUrl: 'https://google.com',
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-      state: 'listed',
-    },
   ]
 
-  const allFragements = JSON.parse(JSON.stringify(Array(200).fill(someFragments).flat()))
+  const allFragements = JSON.parse(JSON.stringify(Array(280).fill(someFragments).flat()))
   let i = 1
   allFragements.forEach((fragment) => (fragment.id = i++))
+
+  const ownedFragments = allFragements.filter((f) => f.state === 'owned')
+  const otherFragments = allFragements.filter((f) => f.state !== 'owned')
 
   return (
     <Wrapper>
@@ -145,7 +184,7 @@ export default function Home() {
           </Video>
         </VideoContainer>
         <Information>
-          <Headline>Holiday 2021</Headline>
+          <Headline>Holiday 2021.</Headline>
           <Text css={{ marginBottom: '15px' }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
             dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
@@ -177,10 +216,28 @@ export default function Home() {
         </Information>
       </Container>
       <FragmentContainer>
-        <Headline>Owned fragments</Headline>
-        <Fragments>{getFragments(allFragements.filter((f) => f.state === 'owned'))}</Fragments>
-        <Headline>Other fragments</Headline>
-        <Fragments>{getFragments(allFragements.filter((f) => f.state !== 'owned'))}</Fragments>
+        <HeadlineContainer>
+          <SubHeadline>Your fragments</SubHeadline>
+          <Text style={{ display: 'inline' }}>{ownedFragments.length}</Text>
+        </HeadlineContainer>
+        {ownedFragments.length === 0 ? (
+          onboard.isWalletSelected ? (
+            <Text>You don't own any fragments yet</Text>
+          ) : (
+            <>
+              <Text style={{ display: 'inline' }}>You haven't connected your wallet yet. </Text>
+              <Hyperlink onClick={connectToWallet}>Connect my wallet</Hyperlink>
+            </>
+          )
+        ) : (
+          <Fragments>{getFragments(ownedFragments)}</Fragments>
+        )}
+        <Separator style={{ marginTop: '28px' }} />
+        <HeadlineContainer>
+          <SubHeadline>All fragments</SubHeadline>
+          <Text style={{ display: 'inline' }}>{otherFragments.length}</Text>
+        </HeadlineContainer>
+        <Fragments>{getFragments(otherFragments)}</Fragments>
       </FragmentContainer>
     </Wrapper>
   )
@@ -192,15 +249,9 @@ function getFragments(fragments) {
       {fragments.map((fragment) => {
         return (
           <Fragment key={fragment.id}>
-            {/* Use tooltip to show more info on fragment?
-                    https://react-component.github.io/tooltip/ */}
-            <a href={fragment.openseaUrl} target="_blank" rel="noopener noreferrer nofollow">
-              <FragmentImage
-                src={fragment.state === 'not_claimed' ? 'cherry_logo.png' : fragment.imageUrl}
-                state={fragment.state}
-              ></FragmentImage>
-            </a>
-            <FragmentId>{fragment.id}</FragmentId>
+            <FragmentImage src={fragment.imageUrl} state={fragment.state} />
+            {fragment.state === 'not_claimed' && <GiftImage src="present_icon.svg" state={fragment.state} />}
+            <FragmentId state={fragment.state}>{fragment.id}</FragmentId>
           </Fragment>
         )
       })}
