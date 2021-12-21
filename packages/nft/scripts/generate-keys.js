@@ -9,8 +9,8 @@ const { MerkleTree } = require('merkletreejs')
 
 let wordlist
 
-function toMerkleLeaf(keyphrase, index) {
-  return ethers.utils.id(`${keyphrase}${index}`)
+function toMerkleLeaf(index, keyphraseHash) {
+  return ethers.utils.solidityKeccak256(['uint256', 'bytes32'], [index, keyphraseHash])
 }
 
 function getRandomWord() {
@@ -67,8 +67,8 @@ async function generateKeyphrases() {
 }
 
 async function merklizeKeyphraseNodes(hashes) {
-  const tree = new MerkleTree(hashes, keccak256)
-  return `0x${tree.getRoot().toString('hex')}`
+  const tree = new MerkleTree(hashes, keccak256, { sort: true })
+  return tree.getHexRoot()
 }
 
 async function main() {
@@ -79,8 +79,8 @@ async function main() {
   console.log()
   const keyphrases = await generateKeyphrases()
   const keyphraseNodes = keyphrases.reduce((obj, keyphrase, index) => {
-    const hashedKeyphrase = ethers.utils.id(keyphrase)
-    obj[hashedKeyphrase] = { index, leaf: toMerkleLeaf(keyphrase, index) }
+    const keyphraseHash = ethers.utils.id(keyphrase)
+    obj[ethers.utils.id(keyphraseHash)] = { leaf: toMerkleLeaf(index, keyphraseHash), tokenId: index }
     return obj
   }, {})
 

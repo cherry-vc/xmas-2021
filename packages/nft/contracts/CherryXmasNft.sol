@@ -27,7 +27,7 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
     address private _minter;
     address private _vault;
 
-    mapping(bytes32 => bool) public claimed;
+    mapping(bytes32 => bool) public claimed; // merkle node => claimed
 
     modifier onlyMinter() {
         require(_msgSender() == _minter, 'M');
@@ -103,8 +103,10 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         bytes32[] memory merkleProof
     ) internal {
         bytes32 node = keccak256(abi.encodePacked(tokenId, key));
-        claimed[node] = true;
+
+        require(!claimed[node], 'N');
         require(MerkleProof.verify(merkleProof, _merkleRoot, node), 'P');
+        claimed[node] = true;
 
         _safeMint(to, tokenId);
     }
