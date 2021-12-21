@@ -9,7 +9,7 @@ export function AppWrapper({ children }) {
   const onboard = useOnboard({
     options: {
       //   dappId: process.env.DAPP_ID, // optional API key
-      networkId: 137,
+      networkId: process.env.NETWORK_ID,
       hideBranding: true,
     },
   })
