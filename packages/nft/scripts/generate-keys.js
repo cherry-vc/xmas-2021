@@ -44,7 +44,7 @@ async function generateKeyphrases() {
       type: 'number',
       name: 'numKeyphrases',
       message: 'Number',
-      default: 800,
+      default: 777,
     },
   ])
 
