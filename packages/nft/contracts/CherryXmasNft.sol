@@ -18,6 +18,8 @@ import './IERC2981.sol';
 contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
     using SafeERC20 for IERC20;
 
+    uint256 private constant DUST_AMOUNT = 0.25 ether;
+
     string private __baseURI;
     string private _contractURI;
     uint256 private _royaltyRate; // specified in bps
@@ -59,6 +61,7 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
      * Minting *
      ***********/
 
+    /// @dev Mint token to an address if they provide a correct key and merkle inclusion proof of key
     function mint(
         address to,
         uint256 tokenId,
@@ -66,10 +69,13 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         bytes32[] memory merkleProof
     ) external onlyMinter {
         _mint(to, tokenId, key, merkleProof);
-        // Ignore failures if recipient doesn't accept dust (but for some reason accepts NFTs 🤷‍♂️)
-        to.call{value: 0.5 ether}('');
+        if (address(this).balance > DUST_AMOUNT) {
+            // Ignore failures if recipient doesn't accept dust (but for some reason accepts NFTs 🤷‍♂️)
+            to.call{value: DUST_AMOUNT}('');
+        }
     }
 
+    /// @dev Mint token to vault if they provide a correct key and merkle inclusion proof of key
     function mintToVault(
         uint256 tokenId,
         bytes32 key,
