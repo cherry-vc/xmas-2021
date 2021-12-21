@@ -169,6 +169,15 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         return _contractURI;
     }
 
+    /// @dev Get all tokens. This is not intended to be used on-chain.
+    function allTokens() public view returns (uint256[] memory tokens) {
+        uint256 supply = ERC721Enumerable.totalSupply();
+        tokens = new uint256[](supply);
+        for (uint256 ii = 0; ii < supply; ++ii) {
+            tokens[ii] = ERC721Enumerable.tokenByIndex(ii);
+        }
+    }
+
     /// @dev Get all tokens of a given address. This is not intended to be used on-chain.
     function tokensOf(address owner) public view returns (uint256[] memory tokens) {
         uint256 bal = ERC721.balanceOf(owner);
