@@ -13,6 +13,7 @@
     "@nomiclabs/hardhat-ethers": "^2.0.3",
     "@nomiclabs/hardhat-etherscan": "^2.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "chai": "^4.3.4",
     "csvtojson": "^2.0.10",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.2",
@@ -23,7 +24,6 @@
     "inquirer": "^8.2.0",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.27",
-    "mocha-chai-jest-snapshot": "^1.1.3",
     "prettier": "^2.5.1",
     "prettier-plugin-solidity": "*",
     "solhint": "^3.3.6",
@@ -33,7 +33,7 @@
     "format": "prettier --write \"contracts/**/*.sol\" \"**/*.js\" \"**/*.md\" \"**/*.yml\" \"**/*.json\"",
     "lint": "solhint \"contracts/*.sol\"",
     "compile": "hardhat compile",
-    "test": "echo \"NFTs need tests?\"",
+    "test": "echo \"NFTs need tests?\" && hardhat test",
     "deploy:polygon": "hardhat run scripts/deploy.js --network polygon"
   }
 }
