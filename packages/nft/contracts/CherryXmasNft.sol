@@ -165,12 +165,17 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         _contractURI = contractURI_;
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
-        return __baseURI;
-    }
-
     function contractURI() public view returns (string memory) {
         return _contractURI;
+    }
+
+    /// @dev Get all tokens of a given address. This is not intended to be used on-chain.
+    function tokensOf(address owner) public view returns (uint256[] memory tokens) {
+        uint256 bal = ERC721.balanceOf(owner);
+        tokens = new uint256[](bal);
+        for (uint256 ii = 0; ii < bal; ++ii) {
+            tokens[ii] = ERC721Enumerable.tokenOfOwnerByIndex(owner, ii);
+        }
     }
 
     function supportsInterface(bytes4 interfaceId)
@@ -181,5 +186,9 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         returns (bool)
     {
         return interfaceId == type(IERC2981).interfaceId || super.supportsInterface(interfaceId);
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return __baseURI;
     }
 }
