@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: 'packages/nft/**'
+    working-directory: 'packages/nft/'
 
 jobs:
   CI:
