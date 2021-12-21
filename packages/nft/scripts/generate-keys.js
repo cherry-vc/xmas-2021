@@ -66,7 +66,7 @@ async function generateKeyphrases() {
   }
 }
 
-async function merklizeKeyphraseHashes(hashes) {
+async function merklizeKeyphraseNodes(hashes) {
   const tree = new MerkleTree(hashes, keccak256)
   return `0x${tree.getRoot().toString('hex')}`
 }
@@ -78,21 +78,29 @@ async function main() {
   console.log('=========================')
   console.log()
   const keyphrases = await generateKeyphrases()
-  const hashedKeyphrases = keyphrases.reduce((obj, keyphrase, index) => {
-    obj[keyphrase] = { index, leaf: toMerkleLeaf(keyphrase, index) }
+  const keyphraseNodes = keyphrases.reduce((obj, keyphrase, index) => {
+    const hashedKeyphrase = ethers.utils.id(keyphrase)
+    obj[hashedKeyphrase] = { index, leaf: toMerkleLeaf(keyphrase, index) }
     return obj
   }, {})
 
   console.log('Dumping keyphrases to file')
   console.log('==========================')
-  const outputPath = path.resolve(__dirname, '../keyphrases.json')
-  fs.writeFileSync(outputPath, JSON.stringify(hashedKeyphrases, '', 2))
-  console.log(`  File: ${outputPath}`)
+  const keyphraseOutputPath = path.resolve(__dirname, '../keyphrases.json')
+  fs.writeFileSync(keyphraseOutputPath, JSON.stringify(keyphrases, '', 2))
+  console.log(`  File: ${keyphraseOutputPath}`)
+  console.log()
+
+  console.log('Dumping merkle nodes to file')
+  console.log('============================')
+  const merkleNodesOutputPath = path.resolve(__dirname, '../merkle-nodes.json')
+  fs.writeFileSync(merkleNodesOutputPath, JSON.stringify(keyphraseNodes, '', 2))
+  console.log(`  File: ${merkleNodesOutputPath}`)
   console.log()
 
   console.log('Generating merkle root')
   console.log('======================')
-  const merkleRoot = await merklizeKeyphraseHashes(Object.values(hashedKeyphrases).map(({ leaf }) => leaf))
+  const merkleRoot = await merklizeKeyphraseNodes(Object.values(keyphraseNodes).map(({ leaf }) => leaf))
   console.log(`  Merkle root for set of keyphrases: ${merkleRoot}`)
 }
 
