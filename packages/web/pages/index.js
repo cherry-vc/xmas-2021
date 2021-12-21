@@ -78,13 +78,18 @@ const FragmentImage = styled('img', {
         // nothing
       },
       listed: {
-        width: '108px',
-        height: '108px',
-        padding: '3px',
+        width: '114px',
+        height: '114px',
+        // padding: '3px',
         border: '3px solid blue',
       },
     },
   },
+})
+
+const FragmentId = styled('div', {
+  color: 'White',
+  transform: 'translate(5px, -24px)',
 })
 
 const Separator = styled('hr', {
@@ -195,6 +200,7 @@ function getFragments(fragments) {
                 state={fragment.state}
               ></FragmentImage>
             </a>
+            <FragmentId>{fragment.id}</FragmentId>
           </Fragment>
         )
       })}
