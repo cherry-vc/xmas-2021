@@ -37,7 +37,6 @@ const InputRow = styled('div', {
   minWidth: '400px',
   display: 'flex',
   alignItems: 'center',
-  marginBottom: '32px',
   gap: '10px',
 })
 
@@ -78,9 +77,15 @@ const Button = styled('button', {
   },
 })
 
+const ErrorField = styled('p', {
+  color: 'red',
+  fontSize: '18px',
+})
+
 export default function Claim() {
   const { claimedPieces, addClaimedPiece, onboard } = useAppContext()
   const [password, setPassword] = useState('')
+  const [isWrongPassword, setWrongPassword] = useState(false)
   const [page, setPage] = useState('PASSWORD', 'CLAIM', 'DONE')
   const { query } = useRouter()
 
@@ -90,9 +95,15 @@ export default function Claim() {
     }
   }, [query])
 
-  const onSubmitPassword = (event) => {
+  const onSubmitPassword = async (event) => {
     event.preventDefault()
-    setPage('CLAIM')
+    const res = await fetch(`/api/check?password=${password}`)
+    const { valid } = await res.json()
+    if (valid) {
+      setPage('CLAIM')
+      return
+    }
+    setWrongPassword(true)
   }
 
   const onKeepInCherrysVault = () => {
@@ -123,6 +134,7 @@ export default function Claim() {
               <FaChevronRight style={{ height: '30px' }} />
             </Submit>
           </InputRow>
+          {isWrongPassword && <ErrorField>Wrong password!</ErrorField>}
         </Container>
       )}
       {page === 'CLAIM' && (
