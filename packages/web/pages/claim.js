@@ -61,6 +61,7 @@ const Button = styled('button', {
   backgroundColor: '#E64980',
   border: 'none',
   flex: '1 1 0px',
+  cursor: 'pointer',
 
   variants: {
     type: {
@@ -112,10 +113,18 @@ export default function Claim() {
     setPage('DONE')
   }
 
-  const onSendToWallet = () => {
-    // TODO: call API
-    console.log('SendToWallet')
-    setPage('DONE')
+  const onSendToWallet = async () => {
+    if (onboard.isWalletSelected) {
+      // TODO: call API
+      console.log('SendToWallet')
+      setPage('DONE')
+    } else {
+      try {
+        await onboard.selectWallet()
+      } catch (error) {
+        console.error(error)
+      }
+    }
   }
 
   return (
@@ -145,7 +154,9 @@ export default function Claim() {
             <Button type="secondary" onClick={() => onKeepInCherrysVault()}>
               Keep in Cherry's vault
             </Button>
-            <Button onClick={() => onSendToWallet()}>Send to wallet</Button>
+            <Button onClick={() => onSendToWallet()}>
+              {onboard.isWalletSelected ? 'Send to wallet' : 'Connect to wallet'}
+            </Button>
           </InputRow>
           <Text>
             Don't have a wallet yet? <a href="">Install one</a>
