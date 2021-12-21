@@ -3,6 +3,7 @@ import { FaChevronRight } from 'react-icons/fa'
 import { styled } from '../stitches.config'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import InfoComponent from '../components/InfoComponent'
 
 const CenterWrapper = styled('div', {
   height: '100%',
@@ -81,6 +82,19 @@ const Button = styled('button', {
 const ErrorField = styled('p', {
   color: 'red',
   fontSize: '18px',
+})
+
+const FragmentContainer = styled('div', {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  margin: 0,
+})
+
+const Fragment = styled('img', {
+  margin: '0 80px',
+  minWidth: '100px',
+  maxWidth: '400px',
 })
 
 export default function Claim() {
@@ -166,7 +180,11 @@ export default function Claim() {
       {page === 'DONE' && (
         <Container>
           <Headline>Your fragment</Headline>
-          <Square></Square>
+          <FragmentContainer>
+            <Fragment src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png" />
+            {/* // TODO: fetch that headline info from where? */}
+            <InfoComponent headline={'#6 / 600'} />
+          </FragmentContainer>
         </Container>
       )}
     </CenterWrapper>

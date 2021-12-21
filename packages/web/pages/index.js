@@ -1,5 +1,6 @@
 import { styled } from '../stitches.config'
 import { useAppContext } from '../context/context'
+import InfoComponent from '../components/InfoComponent'
 
 const Wrapper = styled('div', {
   display: 'flex',
@@ -26,12 +27,6 @@ const Video = styled('video', {
   maxWidth: '600px',
 })
 
-const Information = styled('div', {
-  paddingRight: '80px',
-  minWidth: '300px',
-  maxWidth: '30%',
-})
-
 const Text = styled('p', {
   color: '#000000',
   opacity: 0.5,
@@ -53,8 +48,6 @@ const Hyperlink = styled('a', {
   cursor: 'pointer',
   textDecoration: 'underline',
 })
-
-const Headline = styled('h1', {})
 
 const SubHeadline = styled('h3', {
   paddingRight: '10px',
@@ -183,42 +176,14 @@ export default function Home() {
             <source src="/artpiece.mov" type="video/mp4" />
           </Video>
         </VideoContainer>
-        <Information>
-          <Headline>Holiday 2021.</Headline>
-          <Text css={{ marginBottom: '15px' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur.
-          </Text>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <Text type="label">Artist:</Text>
-                </td>
-                <td>
-                  <Text>Ari Garcia</Text>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Text type="label">Date:</Text>
-                </td>
-                <td>
-                  <Text>December 2021</Text>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <Separator />
-          <Text>You hold {claimedPieces.length}/600 fragments</Text>
-        </Information>
+        <InfoComponent headline={'Holiday 2021.'} />
       </Container>
       <FragmentContainer>
         <HeadlineContainer>
           <SubHeadline>Your fragments</SubHeadline>
-          <Text style={{ display: 'inline' }}>{ownedFragments.length}</Text>
+          <Text style={{ display: 'inline' }}>
+            {ownedFragments.length} / {allFragements.length}
+          </Text>
         </HeadlineContainer>
         {ownedFragments.length === 0 ? (
           onboard.isWalletSelected ? (
@@ -235,9 +200,9 @@ export default function Home() {
         <Separator style={{ marginTop: '28px' }} />
         <HeadlineContainer>
           <SubHeadline>All fragments</SubHeadline>
-          <Text style={{ display: 'inline' }}>{otherFragments.length}</Text>
+          <Text style={{ display: 'inline' }}>{allFragements.length}</Text>
         </HeadlineContainer>
-        <Fragments>{getFragments(otherFragments)}</Fragments>
+        <Fragments>{getFragments(allFragements)}</Fragments>
       </FragmentContainer>
     </Wrapper>
   )
