@@ -44,6 +44,8 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         address minter_,
         address vault_
     ) ERC721(name_, symbol_) {
+        // Ownable sets deployer as initial owner
+
         __baseURI = baseURI_;
         _contractURI = contractURI_;
         _royaltyRate = royaltyRate_;
@@ -151,6 +153,10 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
         _safeTransfer(owner, _vault, tokenId, '');
     }
 
+    function setVault(address vault_) external onlyOwner {
+        _vault = vault_;
+    }
+
     function vault() public view returns (address) {
         return _vault;
     }
@@ -169,6 +175,11 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
 
     function contractURI() public view returns (string memory) {
         return _contractURI;
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        string memory baseURI = ERC721.tokenURI(tokenId);
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, ".json")) : "";
     }
 
     /// @dev Get all tokens. This is not intended to be used on-chain.
