@@ -45,6 +45,8 @@ export const { config, createTheme, css, getCssText, globalCss, styled, theme } 
       6: '21px',
     },
     fonts: {
+      regular: 'DM Sans',
+      italic: 'PT Serif',
       system: 'system-ui',
     },
   },
