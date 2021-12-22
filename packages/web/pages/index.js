@@ -1,6 +1,7 @@
 import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
 import InfoComponent from '../components/InfoComponent'
+import environment from '../environment/web'
 
 const Wrapper = styled('div', {
   display: 'flex',
@@ -140,33 +141,50 @@ export default function Home() {
     }
   }
 
-  const someFragments = [
-    {
-      id: 1,
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-      state: 'not_claimed',
-    },
-    {
-      id: 2,
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-      state: 'claimed',
-    },
-    {
-      id: 3,
-      imageUrl:
-        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-      state: 'owned',
-    },
-  ]
+  const allFragements = []
+  Object.entries(environment.fragmentMapping).forEach((a) => {
+    let state = 'not_claimed'
+    if (a[0] in claimedPieces) state = 'owned'
+    allFragements.push({
+      id: a[0],
+      imageUrl: `thumbs/${a[1]}.jpg`,
+      state: state,
+    })
+  })
 
-  const allFragements = JSON.parse(JSON.stringify(Array(280).fill(someFragments).flat()))
-  let i = 1
-  allFragements.forEach((fragment) => (fragment.id = i++))
+  shuffleArray(allFragements)
+  // .forEach((key, value) => {
+  //   console.log(key)
+  // })
+
+  // console.log(Object.keys(environment.fragmentMapping))
+
+  // const someFragments = [
+  //   {
+  //     id: 1,
+  //     imageUrl:
+  //       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
+  //     state: 'not_claimed',
+  //   },
+  //   {
+  //     id: 2,
+  //     imageUrl:
+  //       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
+  //     state: 'claimed',
+  //   },
+  //   {
+  //     id: 3,
+  //     imageUrl:
+  //       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
+  //     state: 'owned',
+  //   },
+  // ]
+
+  // const allFragements = JSON.parse(JSON.stringify(Array(280).fill(someFragments).flat()))
+  // let i = 1
+  // allFragements.forEach((fragment) => (fragment.id = i++))
 
   const ownedFragments = allFragements.filter((f) => f.state === 'owned')
-  const otherFragments = allFragements.filter((f) => f.state !== 'owned')
 
   return (
     <Wrapper>
@@ -222,4 +240,8 @@ function getFragments(fragments) {
       })}
     </Fragments>
   )
+}
+
+function shuffleArray(inputArray) {
+  inputArray.sort(() => Math.random() - 0.5)
 }

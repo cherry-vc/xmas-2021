@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 
 import envvars from '../lib/envvar'
+import fragmentMap from '../lib/fragmentMap'
 import { polygon as polygonMerkleConfig, mumbai as mumbaiMerkleConfig } from '../lib/merkle-mint'
 import { debug } from '../lib/utils'
 import engageEnvLock from './__lock'
@@ -17,11 +18,13 @@ const environments = {
     merkle: {
       ...polygonMerkleConfig,
     },
+    fragmentMapping: fragmentMap,
   },
   mumbai: {
     merkle: {
       ...mumbaiMerkleConfig,
     },
+    fragmentMapping: fragmentMap,
   },
 }
 

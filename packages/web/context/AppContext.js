@@ -8,12 +8,12 @@ export function AppProvider({ children }) {
 
   const onboard = useOnboard({
     options: {
-      //   dappId: process.env.DAPP_ID, // optional API key
-      networkId: process.env.NETWORK_ID,
+      networkId: process.env.NETWORK_ID, //TODO: where to get the ID from?
       hideBranding: true,
     },
   })
 
+  // TODO: call addClaimedPiece for every tokenId this walletAddress owns
   const addClaimedPiece = (claimedPieceId) => {
     const newClaimedPieces = [claimedPieceId, ...claimedPieces]
     console.log(newClaimedPieces)

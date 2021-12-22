@@ -101,6 +101,8 @@ const Fragment = styled('img', {
 export default function Claim() {
   const { claimedPieces, addClaimedPiece, onboard } = useApp()
   const [password, setPassword] = useState('')
+  const [txValue, setTxValue] = useState('')
+  const [tokenIdValue, setTokenIdValue] = useState(-1)
   const [isWrongPassword, setWrongPassword] = useState(false)
   const [page, setPage] = useState('PASSWORD', 'CLAIM', 'DONE')
   const { query } = useRouter()
@@ -113,9 +115,16 @@ export default function Claim() {
 
   const onSubmitPassword = async (event) => {
     event.preventDefault()
-    const res = await fetch(`/api/check?password=${password}`)
-    const { valid } = await res.json()
-    if (valid) {
+    const res = await fetch('/api/claim', {
+      method: 'POST',
+      body: {
+        key: password,
+      },
+    })
+    const { tokenId, tx } = await res.json()
+    if (tokenId > 0) {
+      setTxValue(tx)
+      setTokenIdValue(tokenId)
       setPage('CLAIM')
       return
     }
@@ -125,6 +134,7 @@ export default function Claim() {
   const onKeepInCherrysVault = () => {
     // TODO: call API
     console.log('KeepInCherrysVault')
+    addClaimedPiece(tokenIdValue)
     setPage('DONE')
   }
 
@@ -132,6 +142,7 @@ export default function Claim() {
     if (onboard.isWalletSelected) {
       // TODO: call API
       console.log('SendToWallet')
+      addClaimedPiece(tokenIdValue)
       setPage('DONE')
     } else {
       try {
@@ -184,7 +195,7 @@ export default function Claim() {
           <FragmentContainer>
             <Fragment src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png" />
             {/* // TODO: fetch that headline info from where? */}
-            <InfoComponent headline={'#6 / 600'} />
+            <InfoComponent headline={`#${tokenIdValue} / 777`} />
           </FragmentContainer>
         </Container>
       )}

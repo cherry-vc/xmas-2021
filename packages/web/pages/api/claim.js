@@ -14,20 +14,19 @@ export default function handler(req, res) {
     return
   }
 
-  if (!minter) {
-    res.status(503).end('Claiming currently not enabled')
-    return
-  }
+  // if (!minter) {
+  //   res.status(503).end('Claiming currently not enabled')
+  //   return
+  // }
 
-  const { body } = req
   // merkle leaf map's keys are another keccak256(key)
   const leafMapKey = ethers.utils.id(req.body?.key || '')
   const leafNode = merkleConfig.leafMap.get(leafMapKey)
 
-  if (!leafNode) {
-    res.status(403).end()
-    return
-  }
+  // if (!leafNode) {
+  //   res.status(403).end()
+  //   return
+  // }
 
   // TODO: find merkle proof and mint
   res.status(200).json({ tokenId: 7, tx: '0x1fc53fce9bb8cf8f35c1ce1f22e58a4e96a714c62ae40c5a7eab1a72f4741d38' })
