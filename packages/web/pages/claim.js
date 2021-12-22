@@ -1,8 +1,9 @@
-import { useAppContext } from '../context/context'
-import { FaChevronRight } from 'react-icons/fa'
-import { styled } from '../stitches.config'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import { FaChevronRight } from 'react-icons/fa'
+
+import { styled } from '../stitches.config'
+import { useApp } from '../context/AppContext'
 import InfoComponent from '../components/InfoComponent'
 
 const CenterWrapper = styled('div', {
@@ -98,7 +99,7 @@ const Fragment = styled('img', {
 })
 
 export default function Claim() {
-  const { claimedPieces, addClaimedPiece, onboard } = useAppContext()
+  const { claimedPieces, addClaimedPiece, onboard } = useApp()
   const [password, setPassword] = useState('')
   const [isWrongPassword, setWrongPassword] = useState(false)
   const [page, setPage] = useState('PASSWORD', 'CLAIM', 'DONE')

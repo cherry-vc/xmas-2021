@@ -3,7 +3,7 @@ import { useOnboard } from 'use-onboard'
 
 const AppContext = createContext()
 
-export function AppWrapper({ children }) {
+export function AppProvider({ children }) {
   const [claimedPieces, setClaimedPieces] = useState([])
 
   const onboard = useOnboard({
@@ -29,6 +29,6 @@ export function AppWrapper({ children }) {
   return <AppContext.Provider value={appState}>{children}</AppContext.Provider>
 }
 
-export function useAppContext() {
+export function useApp() {
   return useContext(AppContext)
 }

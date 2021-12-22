@@ -1,13 +1,13 @@
-import { AppWrapper } from '../context/context'
+import { AppProvider } from '../context/AppContext'
 import Layout from '../components/Layout'
 
 function App({ Component, pageProps }) {
   return (
-    <AppWrapper>
+    <AppProvider>
       <Layout>
         <Component {...pageProps} />
       </Layout>
-    </AppWrapper>
+    </AppProvider>
   )
 }
 

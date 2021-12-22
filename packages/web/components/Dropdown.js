@@ -1,7 +1,7 @@
 import { styled } from '../stitches.config'
 import { Menu, MenuItem } from '@szhsin/react-menu'
 import '@szhsin/react-menu/dist/index.css'
-import { useAppContext } from '../context/context'
+import { useApp } from '../context/AppContext'
 import PasswordClaimModal from './PasswordClaimModal'
 import { useState } from 'react'
 
@@ -19,7 +19,7 @@ const WalletButton = styled('button', {
 })
 
 export default function Dropdown() {
-  const { onboard } = useAppContext()
+  const { onboard } = useApp()
   const [isOpen, setOpen] = useState(false)
 
   const connectToWallet = async (event) => {
