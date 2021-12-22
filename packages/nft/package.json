@@ -34,6 +34,7 @@
     "lint": "solhint \"contracts/*.sol\"",
     "compile": "hardhat compile",
     "test": "echo \"NFTs need tests?\" && hardhat test",
-    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon"
+    "deploy:polygon": "hardhat run scripts/deploy.js --network polygon",
+    "deploy:polygon-testnet": "TESTNET=1 hardhat run scripts/deploy.js --network polygonMumbai"
   }
 }

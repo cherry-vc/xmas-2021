@@ -19,6 +19,10 @@ module.exports = {
       chainId: 137,
       url: process.env.POLYGON_NODE || '',
     },
+    polygonMumbai: {
+      chainId: 80001,
+      url: process.env.POLYGON_MUMBAI_NODE || '',
+    },
   },
   etherscan: {
     apiKey: process.env.POLYGONSCAN_API_KEY,
