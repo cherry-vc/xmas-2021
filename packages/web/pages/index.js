@@ -1,5 +1,5 @@
 import { styled } from '../stitches.config'
-import { useAppContext } from '../context/context'
+import { useApp } from '../context/AppContext'
 import InfoComponent from '../components/InfoComponent'
 
 const Wrapper = styled('div', {
@@ -130,7 +130,7 @@ const Separator = styled('hr', {
 })
 
 export default function Home() {
-  const { claimedPieces, addClaimedPiece, onboard } = useAppContext()
+  const { claimedPieces, addClaimedPiece, onboard } = useApp()
 
   const connectToWallet = async () => {
     try {
