@@ -62,7 +62,9 @@ async function generateKeyphrases() {
   if (!confirmed) {
     process.exit(0)
   } else {
-    return Array(numKeyphrases).fill().map(() => generateKeyphrase(prefix))
+    return Array(numKeyphrases)
+      .fill()
+      .map(() => generateKeyphrase(prefix))
   }
 }
 

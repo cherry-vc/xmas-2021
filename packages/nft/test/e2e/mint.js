@@ -36,16 +36,9 @@ describe('CherryXmasNft (E2E keyphrases)', () => {
 
   before('setup nft', async () => {
     const nftFactory = await ethers.getContractFactory('CherryXmasNft')
-    nft = await nftFactory.connect(owner).deploy(
-      name,
-      symbol,
-      baseUri,
-      contractUri,
-      royaltyRate,
-      merkleRoot,
-      minter.address,
-      vault.address
-    )
+    nft = await nftFactory
+      .connect(owner)
+      .deploy(name, symbol, baseUri, contractUri, royaltyRate, merkleRoot, minter.address, vault.address)
   })
 
   it('output correct merkle root', () => {

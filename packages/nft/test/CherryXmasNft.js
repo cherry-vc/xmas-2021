@@ -48,16 +48,9 @@ describe('CherryXmasNft', () => {
 
   beforeEach('setup nft', async () => {
     const nftFactory = await ethers.getContractFactory('CherryXmasNft')
-    nft = await nftFactory.connect(owner).deploy(
-      name,
-      symbol,
-      baseUri,
-      contractUri,
-      royaltyRate,
-      merkleRoot,
-      minter.address,
-      vault.address
-    )
+    nft = await nftFactory
+      .connect(owner)
+      .deploy(name, symbol, baseUri, contractUri, royaltyRate, merkleRoot, minter.address, vault.address)
   })
 
   context('nft details', () => {
@@ -81,12 +74,8 @@ describe('CherryXmasNft', () => {
     })
 
     it('cannot change details unless owner', async () => {
-      await expect(
-        nft.connect(minter).setBaseURI('ipfs://')
-      ).to.be.revertedWith('Ownable: caller is not the owner')
-      await expect(
-        nft.connect(minter).setContractURI('ipfs://')
-      ).to.be.revertedWith('Ownable: caller is not the owner')
+      await expect(nft.connect(minter).setBaseURI('ipfs://')).to.be.revertedWith('Ownable: caller is not the owner')
+      await expect(nft.connect(minter).setContractURI('ipfs://')).to.be.revertedWith('Ownable: caller is not the owner')
     })
   })
 
@@ -125,7 +114,7 @@ describe('CherryXmasNft', () => {
       // Send some ETH into nft contract
       await owner.sendTransaction({
         to: nft.address,
-        value: ONE_ETH
+        value: ONE_ETH,
       })
       const prevGuyEthBal = await ethers.provider.getBalance(guy.address)
       const prevNftEthBal = await ethers.provider.getBalance(nft.address)
@@ -162,12 +151,8 @@ describe('CherryXmasNft', () => {
       const leaf = toMerkleLeaf(tokenId, key)
       const proof = merkleTree.getHexProof(leaf)
 
-      await expect(
-        nft.connect(guy).mint(guy.address, tokenId, key, proof)
-      ).to.be.revertedWith('M')
-      await expect(
-        nft.connect(guy).mintToVault(tokenId, key, proof)
-      ).to.be.revertedWith('M')
+      await expect(nft.connect(guy).mint(guy.address, tokenId, key, proof)).to.be.revertedWith('M')
+      await expect(nft.connect(guy).mintToVault(tokenId, key, proof)).to.be.revertedWith('M')
     })
   })
 
@@ -207,7 +192,7 @@ describe('CherryXmasNft', () => {
       const dust = ONE_ETH
       await owner.sendTransaction({
         to: nft.address,
-        value: dust
+        value: dust,
       })
       const prevVaultEthBal = await ethers.provider.getBalance(vault.address)
 
@@ -235,9 +220,7 @@ describe('CherryXmasNft', () => {
       })
 
       it('cannot recover unless owner', async () => {
-        await expect(
-          nft.connect(guy).recoverTokenId(tokenId)
-        ).to.be.revertedWith('Ownable: caller is not the owner')
+        await expect(nft.connect(guy).recoverTokenId(tokenId)).to.be.revertedWith('Ownable: caller is not the owner')
       })
     })
   })
@@ -255,9 +238,7 @@ describe('CherryXmasNft', () => {
     })
 
     it('cannot change vault unless owner', async () => {
-        await expect(
-          nft.connect(guy).setVault(guy.address)
-        ).to.be.revertedWith('Ownable: caller is not the owner')
+      await expect(nft.connect(guy).setVault(guy.address)).to.be.revertedWith('Ownable: caller is not the owner')
     })
   })
 
@@ -279,12 +260,10 @@ describe('CherryXmasNft', () => {
     })
 
     it('cannot change owner unless owner', async () => {
-        await expect(
-          nft.connect(guy).transferOwnership(guy.address)
-        ).to.be.revertedWith('Ownable: caller is not the owner')
-        await expect(
-          nft.connect(guy).renounceOwnership()
-        ).to.be.revertedWith('Ownable: caller is not the owner')
+      await expect(nft.connect(guy).transferOwnership(guy.address)).to.be.revertedWith(
+        'Ownable: caller is not the owner'
+      )
+      await expect(nft.connect(guy).renounceOwnership()).to.be.revertedWith('Ownable: caller is not the owner')
     })
   })
 
@@ -322,14 +301,14 @@ describe('CherryXmasNft', () => {
     })
 
     it('can query all minted tokens', async () => {
-      const tokenIds = (await nft.allTokens()).map(id => id.toString()).sort()
+      const tokenIds = (await nft.allTokens()).map((id) => id.toString()).sort()
       const expectedTokenIds = ['0', '1', '3'] // based on mints
 
       expect(tokenIds).to.deep.eq(expectedTokenIds)
     })
 
     it('can query all tokens held by address', async () => {
-      const tokenIdsForAddr = (await nft.tokensOf(guy.address)).map(id => id.toString()).sort()
+      const tokenIdsForAddr = (await nft.tokensOf(guy.address)).map((id) => id.toString()).sort()
       const expectedTokenIdsForAddr = ['0', '3'] // based on mints
 
       expect(tokenIdsForAddr).to.deep.eq(expectedTokenIdsForAddr)

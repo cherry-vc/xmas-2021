@@ -179,7 +179,7 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         string memory baseURI = ERC721.tokenURI(tokenId);
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, ".json")) : "";
+        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, '.json')) : '';
     }
 
     /// @dev Get all tokens. This is not intended to be used on-chain.
