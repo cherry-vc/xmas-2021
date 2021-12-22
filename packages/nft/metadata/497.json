@@ -1,0 +1,48 @@
+{
+  "description": "Single frame of animation (497 / 777)\n\nAdri Garcia x Cherry Ventures",
+  "external_url": "https://xmas-2021.cherry.vc?fragment=497",
+  "image": "ipfs://QmSv1DCLNU4suFQieNrVh3bRJcMzL2HivCanfxfRFnU6Ws/497.jpg",
+  "name": "Fragment #497",
+  "attributes": [
+    {
+      "trait_type": "Left wall, top panel",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Left wall, middle panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Left wall, bottom panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Center wall, top panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Center wall, middle panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Center wall, bottom panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Right wall, top panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Right wall, middle panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Right wall, bottom panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Lights on",
+      "value": 1
+    }
+  ]
+}
