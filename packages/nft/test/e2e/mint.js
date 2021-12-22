@@ -16,7 +16,7 @@ describe('CherryXmasNft (E2E keyphrases)', () => {
   const contractUri = 'ipfs://<contractUri>'
   const royaltyRate = '1000' // 10%
 
-  const merkleRoot = '0x0563aca179e6298b7f42b51dfd532ca9fada10c4deee34a8892c440fec7cd2e3' // output from script
+  const merkleRoot = '0xe0065a7aac7bd823ddb44c7ecf0bc30eb34f52b7f1d3939c788367f333ba3718' // output from script
   let merkleTree
 
   before('setup accounts', async () => {
@@ -29,7 +29,8 @@ describe('CherryXmasNft (E2E keyphrases)', () => {
 
   before('setup merkle tree', () => {
     const leaves = keyphrases.map((phrase, index) => {
-      return ethers.utils.solidityKeccak256(['uint256', 'bytes32'], [index, ethers.utils.id(phrase)])
+      const tokenId = index + 1 // tokenId 0 reserved
+      return ethers.utils.solidityKeccak256(['uint256', 'bytes32'], [tokenId, ethers.utils.id(phrase)])
     })
     merkleTree = new MerkleTree(leaves, keccak256, { sort: true })
   })
