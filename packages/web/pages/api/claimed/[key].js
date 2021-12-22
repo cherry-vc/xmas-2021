@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-import environment, { setupEthers } from '../../environment/api'
+import environment, { setupEthers } from '../../../environment/api'
 
 const { provider } = setupEthers()
 
