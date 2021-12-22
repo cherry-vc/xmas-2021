@@ -134,7 +134,6 @@ const Separator = styled('hr', {
 export default function Home() {
   const { ownedPieces, setOwnedPieces, addOwnedPiece, onboard } = useApp()
   const [claimedPieces, setClaimedPieces] = useState([])
-  const [shuffled, setShuffled] = useState(false)
 
   const connectToWallet = async () => {
     try {
@@ -144,7 +143,6 @@ export default function Home() {
     }
   }
 
-  const allFragements = []
   useEffect(() => {
     fetch(`/api/fragment/${onboard.address ? onboard.address : '0x00'}`).then((res) => {
       res.json().then(({ tokens }) => {
@@ -159,6 +157,7 @@ export default function Home() {
     })
   }, [onboard.wallet])
 
+  const allFragements = []
   Object.entries(environment.fragmentMapping).forEach((fragment) => {
     let state = 'not_claimed'
     const tokenId = parseInt(fragment[0])
@@ -177,33 +176,6 @@ export default function Home() {
   // Generates an error: Prop `src` did not match. Server: "thumbs/white-5.jpg" Client: "thumbs/pink-5.jpg"
   // But can be ignored
   shuffleArray(allFragements)
-
-  // console.log(Object.keys(environment.fragmentMapping))
-
-  // const someFragments = [
-  //   {
-  //     id: 1,
-  //     imageUrl:
-  //       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-  //     state: 'not_claimed',
-  //   },
-  //   {
-  //     id: 2,
-  //     imageUrl:
-  //       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-  //     state: 'claimed',
-  //   },
-  //   {
-  //     id: 3,
-  //     imageUrl:
-  //       'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png',
-  //     state: 'owned',
-  //   },
-  // ]
-
-  // const allFragements = JSON.parse(JSON.stringify(Array(280).fill(someFragments).flat()))
-  // let i = 1
-  // allFragements.forEach((fragment) => (fragment.id = i++))
 
   const ownedFragments = allFragements.filter((f) => f.state === 'owned')
 

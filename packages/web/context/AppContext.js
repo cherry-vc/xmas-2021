@@ -16,7 +16,6 @@ export function AppProvider({ children }) {
   // TODO: call addOwnedPiece for every tokenId this walletAddress owns
   const addOwnedPiece = (ownedPieceId) => {
     const newOwnedPieces = [ownedPieceId, ...ownedPieces]
-    console.log(newOwnedPieces)
     setOwnedPieces(newOwnedPieces)
   }
 
