@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 
 import environment, { setupEthers } from '../../../environment/api'
+import { sortBn } from '../../../lib/utils'
 
-const { provider } = setupEthers()
+const { contracts } = setupEthers()
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const { method } = req
 
   if (method !== 'GET') {
@@ -14,9 +15,12 @@ export default function handler(req, res) {
   }
 
   const { addr } = req.query
+  if (!ethers.utils.isAddress(addr)) {
+    res.status(400).end(`Given Address ${addr} Not An Address`)
+    return
+  }
 
-  // TODO:
-  //   1. instantiate + connect contract
-  //   2. return nft.tokensOf(addr) (and sort it here)
-  res.status(200).json({ tokens: [3, 5, 37, 121] })
+  const tokens = await contracts.nft.tokensOf(addr)
+  const formattedTokens = tokens.sort(sortBn).map((id) => id.toString())
+  res.status(200).json({ tokens: formattedTokens })
 }

@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
 
 import environment, { setupEthers } from '../../environment/api'
+import { sortBn } from '../../lib/utils'
 
-const { provider } = setupEthers()
+const { contracts } = setupEthers()
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const { method } = req
 
   if (method !== 'GET') {
@@ -13,8 +14,7 @@ export default function handler(req, res) {
     return
   }
 
-  // TODO:
-  //   1. instantiate + connect contract
-  //   2. return nft.allTokens() (and sort it here)
-  res.status(200).json({ tokens: [3, 5, 30, 31, 35, 37, 60, 62, 78, 79, 80, 121] })
+  const tokens = await contracts.nft.allTokens()
+  const formattedTokens = tokens.sort(sortBn).map((id) => id.toString())
+  res.status(200).json({ tokens: formattedTokens })
 }
