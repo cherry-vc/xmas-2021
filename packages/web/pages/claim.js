@@ -5,6 +5,7 @@ import { FaChevronRight } from 'react-icons/fa'
 import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
 import InfoComponent from '../components/InfoComponent'
+import environment from '../environment/web'
 
 const CenterWrapper = styled('div', {
   height: '100%',
@@ -99,7 +100,7 @@ const Fragment = styled('img', {
 })
 
 export default function Claim() {
-  const { claimedPieces, addClaimedPiece, onboard } = useApp()
+  const { ownedPieces, addOwnedPiece, onboard } = useApp()
   const [password, setPassword] = useState('')
   const [txValue, setTxValue] = useState('')
   const [tokenIdValue, setTokenIdValue] = useState(-1)
@@ -115,26 +116,29 @@ export default function Claim() {
 
   const onSubmitPassword = async (event) => {
     event.preventDefault()
-    const res = await fetch('/api/claim', {
-      method: 'POST',
-      body: {
-        key: password,
-      },
-    })
-    const { tokenId, tx } = await res.json()
-    if (tokenId > 0) {
-      setTxValue(tx)
-      setTokenIdValue(tokenId)
-      setPage('CLAIM')
-      return
-    }
+    try {
+      const res = await fetch('/api/claim', {
+        method: 'POST',
+        body: {
+          key: password,
+        },
+      })
+
+      const { tokenId, tx } = await res.json()
+      if (tokenId > 0) {
+        setTxValue(tx)
+        setTokenIdValue(tokenId)
+        setPage('CLAIM')
+        return
+      }
+    } catch (error) {}
     setWrongPassword(true)
   }
 
   const onKeepInCherrysVault = () => {
     // TODO: call API
     console.log('KeepInCherrysVault')
-    addClaimedPiece(tokenIdValue)
+    addOwnedPiece(tokenIdValue)
     setPage('DONE')
   }
 
@@ -193,8 +197,7 @@ export default function Claim() {
         <Container>
           <Headline>Your fragment</Headline>
           <FragmentContainer>
-            <Fragment src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Colourful_square.svg/1200px-Colourful_square.svg.png" />
-            {/* // TODO: fetch that headline info from where? */}
+            <Fragment src={`thumbs/${environment.fragmentMapping[tokenIdValue]}.jpg`} />
             <InfoComponent headline={`#${tokenIdValue} / 777`} />
           </FragmentContainer>
         </Container>

@@ -4,7 +4,7 @@ import { useOnboard } from 'use-onboard'
 const AppContext = createContext()
 
 export function AppProvider({ children }) {
-  const [claimedPieces, setClaimedPieces] = useState([])
+  const [ownedPieces, setOwnedPieces] = useState([])
 
   const onboard = useOnboard({
     options: {
@@ -13,16 +13,17 @@ export function AppProvider({ children }) {
     },
   })
 
-  // TODO: call addClaimedPiece for every tokenId this walletAddress owns
-  const addClaimedPiece = (claimedPieceId) => {
-    const newClaimedPieces = [claimedPieceId, ...claimedPieces]
-    console.log(newClaimedPieces)
-    setClaimedPieces(newClaimedPieces)
+  // TODO: call addOwnedPiece for every tokenId this walletAddress owns
+  const addOwnedPiece = (ownedPieceId) => {
+    const newOwnedPieces = [ownedPieceId, ...ownedPieces]
+    console.log(newOwnedPieces)
+    setOwnedPieces(newOwnedPieces)
   }
 
   const appState = {
-    claimedPieces,
-    addClaimedPiece,
+    ownedPieces,
+    addOwnedPiece,
+    setOwnedPieces,
     onboard,
   }
 

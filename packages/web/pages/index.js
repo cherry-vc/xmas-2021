@@ -2,6 +2,7 @@ import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
 import InfoComponent from '../components/InfoComponent'
 import environment from '../environment/web'
+import { useEffect, useState } from 'react'
 
 const Wrapper = styled('div', {
   display: 'flex',
@@ -131,7 +132,9 @@ const Separator = styled('hr', {
 })
 
 export default function Home() {
-  const { claimedPieces, addClaimedPiece, onboard } = useApp()
+  const { ownedPieces, setOwnedPieces, addOwnedPiece, onboard } = useApp()
+  const [claimedPieces, setClaimedPieces] = useState([])
+  const [shuffled, setShuffled] = useState(false)
 
   const connectToWallet = async () => {
     try {
@@ -142,20 +145,38 @@ export default function Home() {
   }
 
   const allFragements = []
-  Object.entries(environment.fragmentMapping).forEach((a) => {
+  useEffect(() => {
+    fetch(`/api/fragment/${onboard.address ? onboard.address : '0x00'}`).then((res) => {
+      res.json().then(({ tokens }) => {
+        setOwnedPieces(tokens)
+      })
+    })
+
+    fetch('/api/fragments').then((res) => {
+      res.json().then(({ tokens }) => {
+        setClaimedPieces(tokens)
+      })
+    })
+  }, [onboard.wallet])
+
+  Object.entries(environment.fragmentMapping).forEach((fragment) => {
     let state = 'not_claimed'
-    if (a[0] in claimedPieces) state = 'owned'
+    const tokenId = parseInt(fragment[0])
+    if (ownedPieces.includes(tokenId)) {
+      state = 'owned'
+    } else if (claimedPieces.includes(tokenId)) {
+      state = 'claimed'
+    }
     allFragements.push({
-      id: a[0],
-      imageUrl: `thumbs/${a[1]}.jpg`,
+      id: tokenId,
+      imageUrl: `thumbs/${fragment[1]}.jpg`,
       state: state,
     })
   })
 
+  // Generates an error: Prop `src` did not match. Server: "thumbs/white-5.jpg" Client: "thumbs/pink-5.jpg"
+  // But can be ignored
   shuffleArray(allFragements)
-  // .forEach((key, value) => {
-  //   console.log(key)
-  // })
 
   // console.log(Object.keys(environment.fragmentMapping))
 
