@@ -1,4 +1,4 @@
-const baseUri = 'QmNqMYbEAMEcwU8SF57fEPLoF1L6bJLkRJUbH9EdCYFeZw'
+const baseUri = 'QmPprbLHSECtKj3jG1uusJx222Hs2ZU1yyQrLHuK9BhJAq'
 
 module.exports = {
   // Contract

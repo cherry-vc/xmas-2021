@@ -73,7 +73,7 @@ function hydrateMetadataTemplate({ tokenId, lights = [] }) {
 
   return {
     description: `Single frame of animation (${tokenId} / 777)\n\nAdri Garcia x Cherry Ventures`,
-    external_url: `${config.externalSiteBaseUri}?fragment=${tokenId}`,
+    external_url: `${config.externalSiteBaseUri}/fragments/${tokenId}`,
     image: `${config.assetBaseUri}${tokenId}.jpg`,
     name: `Fragment #${tokenId}`,
     attributes: [
