@@ -18,5 +18,5 @@ export default function handler(req, res) {
   // TODO:
   //   1. instantiate + connect contract
   //   2. return nft.claimed(key)
-  res.status(200).json({ claimed: true })
+  res.status(200).json({ claimed: false })
 }

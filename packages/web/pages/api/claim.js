@@ -29,7 +29,6 @@ export default function handler(req, res) {
     return
   }
 
-  // TODO: mint and return with tokenId and tx
-  // res.status(200).json({ tokenId, tx })
-  res.status(200).json({ valid: true })
+  // TODO: find merkle proof and mint
+  res.status(200).json({ tokenId: 7, tx: '0x1fc53fce9bb8cf8f35c1ce1f22e58a4e96a714c62ae40c5a7eab1a72f4741d38' })
 }

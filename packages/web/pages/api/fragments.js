@@ -16,5 +16,5 @@ export default function handler(req, res) {
   // TODO:
   //   1. instantiate + connect contract
   //   2. return nft.allTokens() (and sort it here)
-  res.status(200).json({ tokens: [] })
+  res.status(200).json({ tokens: [3, 5, 30, 31, 35, 37, 60, 62, 78, 79, 80, 121] })
 }
