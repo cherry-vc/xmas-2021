@@ -173,7 +173,7 @@ export default function Home() {
       <Container>
         <VideoContainer>
           <Video autoPlay="autoplay" loop muted>
-            <source src="/artpiece.mov" type="video/mp4" />
+            <source src="/animation480p.mp4" type="video/mp4" />
           </Video>
         </VideoContainer>
         <InfoComponent headline={'Holiday 2021.'} />
