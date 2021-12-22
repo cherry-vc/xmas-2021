@@ -3,9 +3,9 @@ import { ethers } from 'ethers'
 import environment, { setupEthers } from '../../environment/api'
 
 const merkleConfig = environment.merkle
-const { minter, provider } = setupEthers()
+const { contracts, minter } = setupEthers()
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const { method } = req
 
   if (method !== 'POST') {
@@ -19,15 +19,38 @@ export default function handler(req, res) {
     return
   }
 
-  // merkle leaf map's keys are another keccak256(key)
-  const leafMapKey = ethers.utils.id(req.body?.key || '')
-  const leafNode = merkleConfig.leafMap.get(leafMapKey)
-
-  if (!leafNode) {
-    res.status(403).end()
+  const to = req.body?.to || ''
+  if (!to || !ethers.utils.isAddress(to)) {
+    res.status(400).end(`To Parameter ${to} Not An Address`)
     return
   }
 
-  // TODO: find merkle proof and mint
-  res.status(200).json({ tokenId: 7, tx: '0x1fc53fce9bb8cf8f35c1ce1f22e58a4e96a714c62ae40c5a7eab1a72f4741d38' })
+  // merkle leaf map's keys are another keccak256(key)
+  const key = req.body?.key || ''
+  const leafMapKey = ethers.utils.id(key)
+  const leafMapNode = merkleConfig.leafMap.get(leafMapKey)
+
+  if (!leafMapNode) {
+    res.status(403).end(`Key Parameter ${key} Invalid`)
+    return
+  }
+  if (await contracts.nft.claimed(key)) {
+    res.status(400).end(`Key Parameter ${key} Already Claimed`)
+    return
+  }
+
+  const { leaf, tokenId } = leafMapNode
+  const proof = merkleConfig.tree.getHexProof(leaf)
+
+  // Sanity check claim tx
+  try {
+    await contracts.nft.connect(minter).callStatic.mint(to, tokenId, key, proof)
+  } catch (err) {
+    res.status(400).end('Claim Tx Failing')
+    return
+  }
+
+  // Send claim tx
+  const tx = await contracts.nft.connect(minter).mint(to, tokenId, key, proof)
+  res.status(200).json({ tokenId, tx: tx.hash })
 }

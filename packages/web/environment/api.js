@@ -46,14 +46,23 @@ const environments = {
 const environment = environments[envvars.chain]
 
 let minter, provider
+let contracts = {}
 function setupEthers() {
   if (!provider && environment.nodeUrl) {
     provider = new ethers.providers.StaticJsonRpcProvider(environment.nodeUrl)
   }
   if (!minter && envvars.minterKey) {
     minter = new ethers.Wallet(envvars.minterKey)
+    if (provider) {
+      minter = minter.connect(provider)
+    }
   }
-  return { minter, provider }
+  for (const [name, contract] of Object.entries(environment.contracts)) {
+    if (!contracts[name] && provider) {
+      contracts[name] = new ethers.Contract(contract.address, contract.abi, provider)
+    }
+  }
+  return { contracts, minter, provider }
 }
 
 debug(`Configured to api environment on chain ${envvars.chain}`)

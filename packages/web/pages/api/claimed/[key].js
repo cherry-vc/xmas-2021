@@ -2,9 +2,9 @@ import { ethers } from 'ethers'
 
 import environment, { setupEthers } from '../../../environment/api'
 
-const { provider } = setupEthers()
+const { contracts } = setupEthers()
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const { method } = req
 
   if (method !== 'GET') {
@@ -14,9 +14,6 @@ export default function handler(req, res) {
   }
 
   const { key } = req.query
-
-  // TODO:
-  //   1. instantiate + connect contract
-  //   2. return nft.claimed(key)
-  res.status(200).json({ claimed: false })
+  const claimed = await contracts.nft.claimed(key)
+  res.status(200).json({ claimed })
 }

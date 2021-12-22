@@ -11,3 +11,10 @@ export function prod(...args) {
     console.error(...args)
   }
 }
+
+export function sortBn(a, b) {
+  const aBn = ethers.BigNumber.from(a)
+  const bBn = ethers.BigNumber.from(b)
+
+  return aBn.gt(bBn) ? 1 : -1
+}
