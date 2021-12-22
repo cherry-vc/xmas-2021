@@ -46,6 +46,11 @@ describe('CherryXmasNft (E2E keyphrases)', () => {
     expect(merkleRoot).to.eq(merkleTree.getHexRoot())
   })
 
+  it('minted token id 0 on construction', async () => {
+    expect(await nft.totalSupply()).to.eq('1')
+    expect(await nft.ownerOf('0')).to.addressEqual(vault.address)
+  })
+
   it('can mint all tokens', async () => {
     for (const keyphrase of [...keyphrases].sort()) {
       const nodeKey = ethers.utils.id(keyphrase)
@@ -57,6 +62,6 @@ describe('CherryXmasNft (E2E keyphrases)', () => {
       await nft.connect(minter).mint(guy.address, tokenId, nodeKey, proof)
     }
 
-    expect(await nft.totalSupply()).to.eq('15')
+    expect(await nft.totalSupply()).to.eq('16') // 15 + token 0
   })
 })

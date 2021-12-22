@@ -54,6 +54,9 @@ contract CherryXmasNft is IERC2981, Ownable, ERC721Enumerable {
 
         _minter = minter_;
         _vault = vault_;
+
+        // On construction, mint token 0 to vault
+        _safeMint(vault_, 0);
     }
 
     /// @dev Allow value to be transferred into this contract so it can send dust to users on mint

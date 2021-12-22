@@ -95,6 +95,11 @@ describe('CherryXmasNft', () => {
       expect(await nft.minter()).to.addressEqual(newMinter.address)
     })
 
+    it('minted token id 0 on construction', async () => {
+      expect(await nft.totalSupply()).to.eq('1')
+      expect(await nft.ownerOf('0')).to.addressEqual(vault.address)
+    })
+
     it('can merkle mint without dust to given address', async () => {
       const prevGuyEthBal = await ethers.provider.getBalance(guy.address)
 
@@ -140,7 +145,7 @@ describe('CherryXmasNft', () => {
       const proof = merkleTree.getHexProof(leaf)
       await nft.connect(minter).mintToVault(tokenId, key, proof)
 
-      expect(await nft.balanceOf(vault.address)).to.equal('1')
+      expect(await nft.balanceOf(vault.address)).to.equal('2') // vault also holds token id 0 from construction
       expect(await nft.ownerOf(tokenId)).to.equal(vault.address)
     })
 
@@ -153,6 +158,18 @@ describe('CherryXmasNft', () => {
 
       await expect(nft.connect(guy).mint(guy.address, tokenId, key, proof)).to.be.revertedWith('M')
       await expect(nft.connect(guy).mintToVault(tokenId, key, proof)).to.be.revertedWith('M')
+    })
+
+    it('cannot re-mint token', async () => {
+      // Mint token id 1
+      const tokenId = 1
+      const key = ethers.utils.id(keyphrases[tokenId])
+      const leaf = toMerkleLeaf(tokenId, key)
+      const proof = merkleTree.getHexProof(leaf)
+      await nft.connect(minter).mint(guy.address, tokenId, key, proof)
+
+      // Attempt to re-mint
+      await expect(nft.connect(minter).mint(owner.address, tokenId, key, proof)).to.be.revertedWith('N')
     })
   })
 
@@ -270,8 +287,8 @@ describe('CherryXmasNft', () => {
   context('queries', () => {
     beforeEach('mint nfts', async () => {
       const mints = [
-        [0, guy.address],
-        [1, owner.address],
+        [1, guy.address],
+        [4, owner.address],
         [3, guy.address],
       ]
 
@@ -302,14 +319,14 @@ describe('CherryXmasNft', () => {
 
     it('can query all minted tokens', async () => {
       const tokenIds = (await nft.allTokens()).map((id) => id.toString()).sort()
-      const expectedTokenIds = ['0', '1', '3'] // based on mints
+      const expectedTokenIds = ['0', '1', '3', '4'] // based on mints
 
       expect(tokenIds).to.deep.eq(expectedTokenIds)
     })
 
     it('can query all tokens held by address', async () => {
       const tokenIdsForAddr = (await nft.tokensOf(guy.address)).map((id) => id.toString()).sort()
-      const expectedTokenIdsForAddr = ['0', '3'] // based on mints
+      const expectedTokenIdsForAddr = ['1', '3'] // based on mints
 
       expect(tokenIdsForAddr).to.deep.eq(expectedTokenIdsForAddr)
     })
