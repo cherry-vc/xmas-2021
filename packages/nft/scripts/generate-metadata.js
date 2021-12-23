@@ -20,7 +20,7 @@ const tokenZeroMetadata = {
   description: config.collectionDescription,
   external_url: config.externalSiteBaseUri,
   image: `${config.assetBaseUri}0.jpg`, // blacked out variant
-  name: 'Showpiece animation',
+  name: 'Cherry Showpiece (Holiday 2021)',
 }
 
 const fragmentBaseAttributes = {
@@ -72,7 +72,7 @@ function hydrateMetadataTemplate({ tokenId, lights = [] }) {
   )
 
   return {
-    description: `Single frame of animation (${tokenId} / 777)\n\nAdri Garcia x Cherry Ventures`,
+    description: `Single frame of animation (${tokenId} / 777)\n\nCherry Ventures x Owi Sixseven`,
     external_url: `${config.externalSiteBaseUri}/fragments/${tokenId}`,
     image: `${config.assetBaseUri}${tokenId}.jpg`,
     name: `Fragment #${tokenId}`,
