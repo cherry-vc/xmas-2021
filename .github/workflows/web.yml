@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: 'packages/web/**'
+    working-directory: 'packages/web/'
 
 jobs:
   CI:

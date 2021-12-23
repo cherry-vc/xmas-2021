@@ -4,20 +4,28 @@
   "version": "0.0.1",
   "license": "MIT",
   "engines": {
-    "node": ">=12"
+    "node": "14.x"
   },
   "dependencies": {
-    "@stitches/react": "^1.0.0",
-    "next": "^12.0.7",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@stitches/react": "1.2.6",
+    "@szhsin/react-menu": "2.3.0",
+    "bnc-onboard": "1.36.0",
+    "ethers": "5.5.2",
+    "keccak256": "1.0.6",
+    "merkletreejs": "0.2.27",
+    "next": "12.0.7",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "4.3.1",
+    "react-modal": "3.14.4",
+    "use-onboard": "0.2.8"
   },
   "devDependencies": {
-    "eslint": "^8.4.1",
-    "eslint-config-next": "^12.0.7",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.5.1"
+    "eslint": "8.4.1",
+    "eslint-config-next": "12.0.7",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-prettier": "4.0.0",
+    "prettier": "2.5.1"
   },
   "scripts": {
     "format": "prettier --write \"**/*.js\" \"**/*.md\" \"**/*.yml\" \"**/*.json\"",
