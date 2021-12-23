@@ -1,3 +1,5 @@
+const demoClaim = !!process.env.NEXT_PUBLIC_DEMO_CLAIM
+
 const chain = (process.env.NEXT_PUBLIC_CHAIN || '').toLowerCase()
 const blockNativeApi = process.env.NEXT_PUBLIC_BLOCKNATIVE_API_KEY || ''
 
@@ -16,6 +18,7 @@ if (!allowedChains.includes(chain)) {
 }
 
 const envvars = {
+  demoClaim,
   chain,
   minterKey,
   apiKeys: {
