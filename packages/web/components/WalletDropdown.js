@@ -1,9 +1,10 @@
-import { styled } from '../stitches.config'
+import { useState } from 'react'
 import { Menu, MenuItem } from '@szhsin/react-menu'
 import '@szhsin/react-menu/dist/index.css'
+
+import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
-import PasswordClaimModal from './PasswordClaimModal'
-import { useState } from 'react'
+// import PasswordClaimModal from './PasswordClaimModal'
 
 const WalletButton = styled('button', {
   height: '35px',
@@ -16,17 +17,8 @@ const WalletButton = styled('button', {
 })
 
 export default function Dropdown() {
-  const { onboard } = useApp()
+  const { onboard, connectToWallet } = useApp()
   const [isOpen, setOpen] = useState(false)
-
-  const connectToWallet = async () => {
-    // event.syntheticEvent.preventDefault()
-    try {
-      await onboard.selectWallet()
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   const handlePasswordModal = () => {
     // This method is also called when the modal is closed -> weird bug?

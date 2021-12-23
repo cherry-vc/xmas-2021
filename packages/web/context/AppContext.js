@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useOnboard } from 'use-onboard'
+import { ethers } from 'ethers'
+import { debug } from '../lib/utils'
 
 const AppContext = createContext()
 
@@ -9,9 +11,49 @@ export function AppProvider({ children }) {
 
   const onboard = useOnboard({
     options: {
+      darkMode: false,
       hideBranding: true,
+      walletSelect: {
+        wallets: [
+          { walletName: 'metamask', preferred: true },
+          /* TODO: re-enable
+          {
+            walletName: 'walletConnect',
+            rpc: {
+              ['137']: 'https://polygon-rpc.com/',
+              ['80001']: 'https://rpc-mumbai.maticvigil.com',
+            },
+            preferred: true,
+          },
+          */
+          { walletName: 'coinbase', preferred: true },
+          { walletName: 'trust', preferred: true },
+        ],
+      },
     },
   })
+
+  const connectToWallet = async () => {
+    try {
+      // Try fetching current wallet's network to avoid asking them to switch it
+      if (window.ethereum) {
+        const rawCurrentChainId = await window.ethereum.request({ method: 'eth_chainId' })
+        const currentChainId = ethers.BigNumber.from(rawCurrentChainId).toNumber()
+        if (currentChainId) {
+          const onboardInstance = onboard.onboard
+          onboardInstance.config({ networkId: currentChainId })
+        }
+      }
+    } catch (error) {
+      debug('Failed to fetch current chain id', error)
+    }
+
+    try {
+      await onboard.selectWallet()
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   // Useful to "optimistically" add new fragments to an owner
   const addOwnedFragment = (newTokenId) => {
@@ -34,14 +76,14 @@ export function AppProvider({ children }) {
   useEffect(() => {
     fetch('/api/fragments').then((res) => {
       res.json().then(({ tokens }) => {
-        console.log(tokens)
-        setClaimedFragments(new Set(tokens))
+        setClaimedFragments(new Set(tokens.map((id) => parseInt(id, '10'))))
       })
     })
   }, [])
 
   const appState = {
     onboard,
+    connectToWallet,
     addOwnedFragment,
     ownedFragments,
     claimedFragments,
