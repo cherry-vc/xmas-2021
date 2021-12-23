@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { FaChevronRight } from 'react-icons/fa'
-import ethers from 'ethers'
+import { ethers } from 'ethers'
 
 import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
