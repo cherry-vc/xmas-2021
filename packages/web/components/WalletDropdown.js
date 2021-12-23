@@ -7,23 +7,20 @@ import { useState } from 'react'
 
 const WalletButton = styled('button', {
   height: '35px',
-  width: '110px',
-  margin: '15px 30px 15px 15px',
-  padding: '0 15px 0 15px',
+  width: '140px',
+  marginLeft: '20px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  color: 'white',
-  backgroundColor: '#E64980',
-  border: 'none',
-  cursor: 'pointer',
+  color: '$white',
+  backgroundColor: '$cherry',
 })
 
 export default function Dropdown() {
   const { onboard } = useApp()
   const [isOpen, setOpen] = useState(false)
 
-  const connectToWallet = async (event) => {
-    event.syntheticEvent.preventDefault()
+  const connectToWallet = async () => {
+    // event.syntheticEvent.preventDefault()
     try {
       await onboard.selectWallet()
     } catch (error) {
@@ -31,18 +28,24 @@ export default function Dropdown() {
     }
   }
 
-  const handleClick = () => {
+  const handlePasswordModal = () => {
     // This method is also called when the modal is closed -> weird bug?
-    if (!isOpen) setOpen(true)
+    if (!isOpen) {
+      setOpen(true)
+    }
   }
 
+  const onClick = onboard.isWalletSelected ? onboard.disconnectWallet : connectToWallet
+
+  return <WalletButton onClick={onClick}>{onboard.isWalletSelected ? 'Disconnect' : 'Connect Wallet'}</WalletButton>
+  /* Dropdown's causing layout problems
   return (
-    <Menu menuButton={<WalletButton>{onboard.isWalletSelected ? onboard.address : 'Open Wallet'}</WalletButton>}>
+    <Menu menuButton={<WalletButton>{onboard.isWalletSelected ? onboard.address : 'Connect Wallet'}</WalletButton>}>
       {!onboard.isWalletSelected && <MenuItem onClick={(event) => connectToWallet(event)}>Connect Wallet</MenuItem>}
       {onboard.isWalletSelected && <MenuItem onClick={() => onboard.disconnectWallet()}>Disconnect Wallet</MenuItem>}
-      <MenuItem onClick={() => handleClick()}>
+      {<MenuItem onClick={() => handlePasswordModal()}>
         <PasswordClaimModal isOpen={isOpen} setOpen={setOpen} />
-      </MenuItem>
+      </MenuItem>}
     </Menu>
-  )
+  */
 }

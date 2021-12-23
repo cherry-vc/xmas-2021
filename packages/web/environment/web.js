@@ -13,6 +13,7 @@ const environments = {
   //     root,
   //     tree,
   //   },
+  //   fragmentMapping,
   // }
   polygon: {
     merkle: {

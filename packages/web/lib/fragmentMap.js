@@ -1,4 +1,4 @@
-export default {
+const fragmentMap = {
   1: 'black-0',
   202: 'blue-0',
   203: 'blue-0',
@@ -777,3 +777,5 @@ export default {
   661: 'yellow-5',
   662: 'yellow-5',
 }
+
+export default fragmentMap

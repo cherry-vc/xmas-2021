@@ -4,7 +4,6 @@ import { FaChevronRight } from 'react-icons/fa'
 
 import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
-import InfoComponent from '../components/InfoComponent'
 import environment from '../environment/web'
 
 const CenterWrapper = styled('div', {
@@ -100,7 +99,7 @@ const Fragment = styled('img', {
 })
 
 export default function Claim() {
-  const { ownedPieces, addOwnedPiece, onboard } = useApp()
+  const { addOwnedPiece, onboard } = useApp()
   const [password, setPassword] = useState('')
   const [txValue, setTxValue] = useState('')
   const [tokenIdValue, setTokenIdValue] = useState(-1)
@@ -198,7 +197,7 @@ export default function Claim() {
           <Headline>Your fragment</Headline>
           <FragmentContainer>
             <Fragment src={`thumbs/${environment.fragmentMapping[tokenIdValue]}.jpg`} />
-            <InfoComponent headline={`#${tokenIdValue} / 777`} />
+            {/*<InfoComponent headline={`#${tokenIdValue} / 777`} />*/}
           </FragmentContainer>
         </Container>
       )}

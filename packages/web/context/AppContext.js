@@ -1,29 +1,50 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { useOnboard } from 'use-onboard'
 
 const AppContext = createContext()
 
 export function AppProvider({ children }) {
-  const [ownedPieces, setOwnedPieces] = useState([])
+  const [ownedFragments, setOwnedFragments] = useState(new Set())
+  const [claimedFragments, setClaimedFragments] = useState(new Set())
 
   const onboard = useOnboard({
     options: {
-      networkId: process.env.NETWORK_ID, //TODO: where to get the ID from?
       hideBranding: true,
     },
   })
 
-  // TODO: call addOwnedPiece for every tokenId this walletAddress owns
-  const addOwnedPiece = (ownedPieceId) => {
-    const newOwnedPieces = [ownedPieceId, ...ownedPieces]
+  // Useful to "optimistically" add new fragments to an owner
+  const addOwnedFragment = (newTokenId) => {
+    const newOwnedPieces = [...new Set(ownedFragments.concat(ownedPieceId))]
     setOwnedPieces(newOwnedPieces)
   }
 
+  useEffect(() => {
+    if (onboard.address) {
+      fetch(`/api/fragment/${onboard.address}`).then((res) => {
+        res.json().then(({ tokens }) => {
+          setOwnedFragments(new Set(tokens))
+        })
+      })
+    } else {
+      setOwnedFragments(new Set())
+    }
+  }, [onboard.address])
+
+  useEffect(() => {
+    fetch('/api/fragments').then((res) => {
+      res.json().then(({ tokens }) => {
+        console.log(tokens)
+        setClaimedFragments(new Set(tokens))
+      })
+    })
+  }, [])
+
   const appState = {
-    ownedPieces,
-    addOwnedPiece,
-    setOwnedPieces,
     onboard,
+    addOwnedFragment,
+    ownedFragments,
+    claimedFragments,
   }
 
   return <AppContext.Provider value={appState}>{children}</AppContext.Provider>

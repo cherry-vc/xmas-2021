@@ -1,54 +1,81 @@
+import { useEffect, useState } from 'react'
 import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
-import InfoComponent from '../components/InfoComponent'
+import SafeLink from '../components/SafeLink'
 import environment from '../environment/web'
-import { useEffect, useState } from 'react'
+import { buildOpenseaAssetUrl, openseaCollectionBaseUrl } from '../lib/url'
+
+const fragments = Object.entries(environment.fragmentMapping)
+  .map((fragment) => {
+    const tokenId = fragment[0]
+    return {
+      tokenId,
+      src: `thumbs/${fragment[1]}.jpg`,
+      url: buildOpenseaAssetUrl(tokenId),
+    }
+  })
+  .sort((a, b) => Number(a.tokenId) - Number(b.tokenId))
 
 const Wrapper = styled('div', {
   display: 'flex',
   flexDirection: 'column',
+  alignItems: 'center',
+  maxWidth: '$maxWidth',
+  margin: '0 auto',
+  marginTop: '30px',
+  padding: '0 $pagePadding',
 })
 
 const Container = styled('div', {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  margin: 0,
-})
-
-const VideoContainer = styled('div', {
-  width: '100%',
-  padding: '0 80px 0 80px',
 })
 
 const Video = styled('video', {
   display: 'block',
-  margin: 'auto',
   width: '100%',
   minWidth: '100px',
-  maxWidth: '600px',
+  maxWidth: '450px',
+  paddingRight: '25px',
+})
+
+const Information = styled('div', {
+  minWidth: '300px',
+  maxWidth: '45%',
+  paddingLeft: '25px',
+})
+
+const Headline = styled('h1', {
+  fontSize: '40px',
+  marginBottom: '10px',
+})
+
+const Separator = styled('hr', {
+  height: '1px',
+  background: '$grey',
+  border: 'none',
 })
 
 const Text = styled('p', {
-  color: '#000000',
   opacity: 0.5,
-  margin: 0,
-  padding: 0,
+  lineHeight: 1.5,
 
   variants: {
     type: {
       label: {
         opacity: 1,
+        marginRight: '10px',
       },
     },
   },
 })
 
-const Hyperlink = styled('a', {
-  color: '#E64980',
-  opacity: 1,
-  cursor: 'pointer',
-  textDecoration: 'underline',
+const SubTextLinks = styled('p', {
+  opacity: 0.5,
+  lineHeight: 1.5,
+  fontSize: '12px',
+  fontFamily: '$italic',
 })
 
 const SubHeadline = styled('h3', {
@@ -60,31 +87,32 @@ const HeadlineContainer = styled('div', {
   padding: '20px 0',
 })
 
-const FragmentContainer = styled('div', {
-  margin: '80px',
+const FragmentsContainer = styled('div', {
+  marginTop: '40px',
 })
 
 const Fragments = styled('div', {
   display: 'flex',
   flexWrap: 'wrap',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
   gap: '15px',
 })
 
-const Fragment = styled('div', {
+const FragmentContainer = styled('div', {
+  position: 'relative',
   width: '120px',
   height: '120px',
+  overflow: 'hidden',
 })
 
 const FragmentImage = styled('img', {
   width: '120px',
   height: '120px',
   variants: {
-    state: {
+    type: {
       not_claimed: {
         // gift icon
-        filter: 'blur(10px)',
-        transform: 'scale(0.85)',
+        filter: 'blur(7px)',
       },
     },
   },
@@ -95,45 +123,49 @@ const GiftImage = styled('img', {
   position: 'relative',
   top: '0px',
   left: '0px',
-  padding: '45px',
-  height: '30px',
-  width: '30px',
+  padding: '48px',
   filter: 'none',
-  transform: 'translate(0px, -124px)',
-  backgroundColor: 'black',
+  transform: 'translate(0px, -119px)',
+  backgroundColor: '$black',
 })
 
 const FragmentId = styled('div', {
-  color: 'White',
+  position: 'absolute',
+  bottom: 0,
+  right: 0,
+  color: '$white',
   width: '28px',
-  height: '23px',
+  height: '25px',
+  paddingTop: '2px',
   textAlign: 'center',
-  paddingTop: '6px',
-  transform: 'translate(92px, -33px)',
   variants: {
-    state: {
+    type: {
       not_claimed: {
         display: 'none',
       },
       claimed: {
-        background: 'black',
+        background: '$black',
       },
       owned: {
-        background: '#E64980',
+        background: '$cherry',
       },
     },
   },
 })
 
-const Separator = styled('hr', {
-  height: '1px',
-  background: '#D8D8D8',
-  border: 'none',
-})
+function Fragment({ tokenId, src, type, url, ...props }) {
+  const container = (
+    <FragmentContainer {...props}>
+      <FragmentImage src={src} type={type} />
+      {type === 'not_claimed' && <GiftImage src="present_icon.svg" type={type} />}
+      <FragmentId type={type}>{tokenId}</FragmentId>
+    </FragmentContainer>
+  )
+  return url ? <SafeLink href={url}>{container}</SafeLink> : container
+}
 
 export default function Home() {
-  const { ownedPieces, setOwnedPieces, addOwnedPiece, onboard } = useApp()
-  const [claimedPieces, setClaimedPieces] = useState([])
+  const { onboard, ownedFragments, claimedFragments } = useApp()
 
   const connectToWallet = async () => {
     try {
@@ -143,98 +175,97 @@ export default function Home() {
     }
   }
 
-  useEffect(() => {
-    fetch(`/api/fragment/${onboard.address ? onboard.address : '0x00'}`).then((res) => {
-      res.json().then(({ tokens }) => {
-        setOwnedPieces(tokens)
-      })
-    })
-
-    fetch('/api/fragments').then((res) => {
-      res.json().then(({ tokens }) => {
-        setClaimedPieces(tokens)
-      })
-    })
-  }, [onboard.wallet])
-
-  const allFragements = []
-  Object.entries(environment.fragmentMapping).forEach((fragment) => {
-    let state = 'not_claimed'
-    const tokenId = parseInt(fragment[0])
-    if (ownedPieces.includes(tokenId)) {
-      state = 'owned'
-    } else if (claimedPieces.includes(tokenId)) {
-      state = 'claimed'
-    }
-    allFragements.push({
-      id: tokenId,
-      imageUrl: `thumbs/${fragment[1]}.jpg`,
-      state: state,
-    })
-  })
-
-  // Generates an error: Prop `src` did not match. Server: "thumbs/white-5.jpg" Client: "thumbs/pink-5.jpg"
-  // But can be ignored
-  shuffleArray(allFragements)
-
-  const ownedFragments = allFragements.filter((f) => f.state === 'owned')
-
   return (
     <Wrapper>
       <Container>
-        <VideoContainer>
-          <Video autoPlay="autoplay" loop muted>
-            <source src="/animation480p.mp4" type="video/mp4" />
-          </Video>
-        </VideoContainer>
-        <InfoComponent headline={'Holiday 2021.'} />
+        <Video autoPlay="autoplay" loop muted>
+          <source src="/animation480p.mp4" type="video/mp4" />
+        </Video>
+        <Information>
+          <Headline>
+            <em>Holidays</em> 2021.
+          </Headline>
+          <Text css={{ marginBottom: '15px' }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
+            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur.
+          </Text>
+          <SubTextLinks css={{ marginBottom: '15px' }}>
+            <SafeLink href="sale-and-license-rarible-variant-e.pdf" style={{ marginRight: '5px' }}>
+              Terms
+            </SafeLink>
+            <SafeLink href={openseaCollectionBaseUrl} style={{ marginRight: '5px' }}>
+              Opensea
+            </SafeLink>
+            <SafeLink href="https://github.com/cherry-vc/xmas-2021/" style={{ marginRight: '5px' }}>
+              Github
+            </SafeLink>
+          </SubTextLinks>
+          <Separator style={{ margin: '25px 0' }} />
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <Text type="label">Artist:</Text>
+                </td>
+                <td>
+                  <Text>Owi SixSeven</Text>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Text type="label">Date:</Text>
+                </td>
+                <td>
+                  <Text>2021</Text>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </Information>
       </Container>
-      <FragmentContainer>
+      <FragmentsContainer>
         <HeadlineContainer>
           <SubHeadline>Your fragments</SubHeadline>
           <Text style={{ display: 'inline' }}>
-            {ownedFragments.length} / {allFragements.length}
+            {onboard.isWalletSelected ? `${ownedFragments.size} • ${onboard.address}` : ''}
           </Text>
         </HeadlineContainer>
-        {ownedFragments.length === 0 ? (
+        {ownedFragments.size === 0 ? (
           onboard.isWalletSelected ? (
             <Text>You don't own any fragments yet</Text>
           ) : (
             <>
-              <Text style={{ display: 'inline' }}>You haven't connected your wallet yet. </Text>
-              <Hyperlink onClick={connectToWallet}>Connect my wallet</Hyperlink>
+              <Text style={{ display: 'inline' }}>You haven't connected your wallet yet</Text>
             </>
           )
         ) : (
-          <Fragments>{getFragments(ownedFragments)}</Fragments>
+          <Fragments>
+            {fragments
+              .filter(({ tokenId }) => ownedFragments.has(tokenId))
+              .map(({ tokenId, src, url }, index) => (
+                <Fragment key={index} tokenId={tokenId} src={src} url={url} type="owned" />
+              ))}
+          </Fragments>
         )}
         <Separator style={{ marginTop: '28px' }} />
         <HeadlineContainer>
           <SubHeadline>All fragments</SubHeadline>
-          <Text style={{ display: 'inline' }}>{allFragements.length}</Text>
+          <Text style={{ display: 'inline' }}>{fragments.length}</Text>
         </HeadlineContainer>
-        <Fragments>{getFragments(allFragements)}</Fragments>
-      </FragmentContainer>
+        <Fragments>
+          {fragments.map(({ tokenId, src, url }, index) => {
+            const type = ownedFragments.has(tokenId)
+              ? 'owned'
+              : claimedFragments.has(tokenId)
+              ? 'claimed'
+              : 'not_claimed'
+            const linkUrl = type === 'claimed' ? url : ''
+            return <Fragment key={index} tokenId={tokenId} src={src} url={linkUrl} type={type} />
+          })}
+        </Fragments>
+      </FragmentsContainer>
     </Wrapper>
   )
-}
-
-function getFragments(fragments) {
-  return (
-    <Fragments>
-      {fragments.map((fragment) => {
-        return (
-          <Fragment key={fragment.id}>
-            <FragmentImage src={fragment.imageUrl} state={fragment.state} />
-            {fragment.state === 'not_claimed' && <GiftImage src="present_icon.svg" state={fragment.state} />}
-            <FragmentId state={fragment.state}>{fragment.id}</FragmentId>
-          </Fragment>
-        )
-      })}
-    </Fragments>
-  )
-}
-
-function shuffleArray(inputArray) {
-  inputArray.sort(() => Math.random() - 0.5)
 }
