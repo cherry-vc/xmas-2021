@@ -1,8 +1,20 @@
 const hre = require('hardhat')
 const inquirer = require('inquirer')
 
+const nftConfig = require('../config/nft')
+
 async function sanity() {
   const network = await ethers.provider.getNetwork()
+
+  if (process.env.TESTNET) {
+    const expectedChainId = hre.config.networks.polygonMumbai.chainId
+    if (network.chainId !== expectedChainId) {
+      console.log(`Wrong chain id! Expected ${expectedChainId} (Polygon Mumbai testnet), got: ${network.chainId}`)
+      throw new Error('Wrong chain id')
+    }
+    return
+  }
+
   const expectedChainId = hre.config.networks.polygon.chainId
   if (network.chainId !== expectedChainId) {
     console.log(`Wrong chain id! Expected ${expectedChainId} (Polygon mainnet), got: ${network.chainId}`)
@@ -16,7 +28,10 @@ async function sanity() {
 }
 
 async function confirm() {
-  console.log(`Will deploy...`)
+  console.log(`Will deploy CherryXmasNft, initialized to:`)
+  Object.entries(nftConfig).forEach(([k, v]) => {
+    console.log(`  - ${k}: ${v}`)
+  })
   console.log()
 
   const accounts = await hre.ethers.getSigners()
@@ -38,29 +53,50 @@ async function confirm() {
 
 async function deploy() {
   console.log('Deploying...')
-  /*
-  const contractFactory = await hre.ethers.getContractFactory(...)
-  const contract = await contractFactory.deploy(
-    ...
+  const nftFactory = await hre.ethers.getContractFactory('CherryXmasNft')
+  const nft = await nftFactory.deploy(
+    nftConfig.name,
+    nftConfig.symbol,
+    nftConfig.baseUri,
+    nftConfig.contractUri,
+    nftConfig.royaltyRate,
+    nftConfig.merkleRoot,
+    nftConfig.minter,
+    nftConfig.vault
   )
 
   // Wait for a few confirmations to reduce chances of Etherscan verification failing
-  await contract.deployTransaction.wait(5)
-  console.log(`Deployed to address: ${contract.address}`)
+  await nft.deployTransaction.wait(5)
+  console.log(`Deployed to address: ${nft.address}`)
 
-  return contract
-  */
+  return nft
 }
 
 async function verify(contract) {
   console.log()
-  console.log('Verifying on Etherscan...')
-  /*
+
+  const network = await ethers.provider.getNetwork()
+  const mumbaiChainId = hre.config.networks.polygonMumbai.chainId
+
+  if (network.chainId === mumbaiChainId) {
+    console.log('Skipping verification on Mumbai testnet...')
+    return
+  }
+
+  console.log('Verifying on Polygonscan...')
   await hre.run('verify:verify', {
     address: contract.address,
-    constructorArguments: [...],
+    constructorArguments: [
+      nftConfig.name,
+      nftConfig.symbol,
+      nftConfig.baseUri,
+      nftConfig.contractUri,
+      nftConfig.royaltyRate,
+      nftConfig.merkleRoot,
+      nftConfig.minter,
+      nftConfig.vault,
+    ],
   })
-  */
 }
 
 async function main() {
