@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import envvars from '../lib/envvar'
 import fragmentMap from '../lib/fragmentMap'
 import { polygon as polygonMerkleConfig, mumbai as mumbaiMerkleConfig } from '../lib/merkle-mint'
-import { debug } from '../lib/utils'
+import { debug, prod } from '../lib/utils'
 import engageEnvLock from './__lock'
 
 const environments = {
@@ -14,6 +14,7 @@ const environments = {
   //     tree,
   //   },
   //   fragmentMapping,
+  //   demoClaim,
   // }
   polygon: {
     merkle: {
@@ -30,8 +31,12 @@ const environments = {
 }
 
 const environment = environments[envvars.chain]
+environment.demoClaim = envvars.demoClaim
 
 debug(`Configured to web environment on chain ${envvars.chain}`)
+if (environment.demoClaim) {
+  prod('!!! Configured to demo the claiming process (NEXT_PUBLIC_DEMO_CLAIM)')
+}
 engageEnvLock('web')
 
 export default environment

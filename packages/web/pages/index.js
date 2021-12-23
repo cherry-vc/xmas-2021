@@ -7,14 +7,14 @@ import { buildOpenseaAssetUrl, openseaCollectionBaseUrl } from '../lib/url'
 
 const fragments = Object.entries(environment.fragmentMapping)
   .map((fragment) => {
-    const tokenId = fragment[0]
+    const tokenId = parseInt(fragment[0], '10')
     return {
       tokenId,
       src: `thumbs/${fragment[1]}.jpg`,
       url: buildOpenseaAssetUrl(tokenId),
     }
   })
-  .sort((a, b) => Number(a.tokenId) - Number(b.tokenId))
+  .sort((a, b) => a.tokenId - b.tokenId)
 
 const Wrapper = styled('div', {
   display: 'flex',
@@ -156,8 +156,8 @@ const FragmentId = styled('div', {
 function Fragment({ tokenId, src, type, url, ...props }) {
   const container = (
     <FragmentContainer {...props}>
-      <FragmentImage src={src} type={type} />
-      {type === 'not_claimed' && <GiftImage src="present_icon.svg" type={type} />}
+      <FragmentImage src={src} alt={`Fragment #${tokenId}`} type={type} />
+      {type === 'not_claimed' && <GiftImage src="present_icon.svg" alt="" type={type} />}
       <FragmentId type={type}>{tokenId}</FragmentId>
     </FragmentContainer>
   )
@@ -166,14 +166,6 @@ function Fragment({ tokenId, src, type, url, ...props }) {
 
 export default function Home() {
   const { onboard, ownedFragments, claimedFragments } = useApp()
-
-  const connectToWallet = async () => {
-    try {
-      await onboard.selectWallet()
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   return (
     <Wrapper>

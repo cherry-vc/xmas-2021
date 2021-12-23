@@ -1,34 +1,31 @@
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaChevronRight } from 'react-icons/fa'
 import { ethers } from 'ethers'
 
 import { styled } from '../stitches.config'
+import SafeLink from '../components/SafeLink'
 import { useApp } from '../context/AppContext'
 import environment from '../environment/web'
-
-const CenterWrapper = styled('div', {
-  height: '100%',
-  display: 'flex',
-  justifyContent: 'center',
-})
+import { debug } from '../lib/utils'
 
 const Container = styled('div', {
-  paddingTop: '10%',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  padding: '0 $pagePadding',
+  paddingTop: '40px',
 })
 
-const Square = styled('div', {
-  width: '500px',
-  height: '300px',
-  background: '#EEE5D3',
+const GiftboxImage = styled('img', {
+  width: '450px',
   marginBottom: '32px',
 })
 
 const Headline = styled('h1', {
-  marginBottom: '64px',
+  textAlign: 'center',
+  marginBottom: '30px',
 })
 
 const Text = styled('p', {
@@ -36,35 +33,52 @@ const Text = styled('p', {
   margin: '0 0 32px 0',
 })
 
-const InputRow = styled('div', {
-  minWidth: '400px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px',
+const PasswordForm = styled('form', {
+  position: 'relative',
+  width: '330px', // align with header text
 })
 
 const Input = styled('input', {
   border: 'none',
   height: '32px',
+  width: '100%',
   fontSize: '18px',
   backgroundColor: 'transparent',
   borderBottom: '1px solid $grey',
-  width: '100%',
+  paddingRight: '40px', // give space for button placed above
 })
 
 const Submit = styled('button', {
+  position: 'absolute',
+  right: 0,
+  padding: '9px 0 9px 9px',
   background: 'none',
   border: 'none',
+  userSelect: 'none',
+})
+
+const ErrorField = styled('p', {
+  opacity: 0.5,
+  width: '330px',
+  fontSize: '13px',
+  fontFamily: '$italic',
+  marginTop: '10px',
+})
+
+const ButtonRow = styled('div', {
+  width: '100%',
+  maxWidth: '400px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
 })
 
 const Button = styled('button', {
-  height: '30px',
-  margin: 0,
+  height: '40px',
   color: '$white',
   backgroundColor: '$cherry',
   border: 'none',
   flex: '1 1 0px',
-  cursor: 'pointer',
 
   variants: {
     type: {
@@ -73,39 +87,48 @@ const Button = styled('button', {
         backgroundColor: '$white',
       },
     },
-    state: {
-      disabled: {
+    disabled: {
+      true: {
         backgroundColor: 'Grey',
       },
     },
   },
 })
 
-const ErrorField = styled('p', {
-  color: 'red',
-  fontSize: '18px',
+const InstallWalletLink = styled(SafeLink, {
+  color: '$cherry',
+})
+
+const TeamImage = styled('img', {
+  width: '600px',
+  marginBottom: '32px',
 })
 
 const FragmentContainer = styled('div', {
   display: 'flex',
+  flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  margin: 0,
 })
 
 const Fragment = styled('img', {
-  margin: '0 80px',
   minWidth: '100px',
   maxWidth: '400px',
 })
 
+const GalleryLink = styled('a', {
+  padding: '20px',
+})
+
 export default function Claim() {
-  const { onboard, addOwnedPiece } = useApp()
+  const { onboard, connectToWallet, addOwnedFragment } = useApp()
   const [page, setPage] = useState('PASSWORD') // PASSWORD, CLAIM, CUSTODY_CHECK, DONE
 
   const [password, setPassword] = useState('')
+  const [keyhash, setKeyhash] = useState('')
   const [error, setError] = useState(null) // PASSWORD, CLAIMED, UNKNOWN
-  const [tokenIdValue, setTokenIdValue] = useState(-1)
+  const [claiming, setClaiming] = useState(false)
+  const [claimedTokenId, setClaimedTokenId] = useState(-1)
   const [txValue, setTxValue] = useState('')
 
   const { query } = useRouter()
@@ -139,125 +162,173 @@ export default function Claim() {
       return
     }
 
-    let previouslyClaimed
     try {
-      const res = await fetch(`/api/claimed/${keyphraseHash}`)
-      const { claimed: previouslyClaimed } = await res.json()
-    } catch (err) {
-      setError('UNKNOWN')
-      return
-    }
+      const res = await fetch(`/api/claimed/${leafMapNode.leaf}`)
+      const { claimed } = await res.json()
+      console.log('claimed', claimed)
 
-    if (claimed) {
-      setError('CLAIMED')
+      if (claimed) {
+        setError('CLAIMED')
+        return
+      }
+    } catch (err) {
+      console.log(err)
+      setError('UNKNOWN')
       return
     }
 
     // Otherwise, this password is legit and we can move on!
     setPage('CLAIM')
+    setKeyhash(keyphraseHash)
+  }
+
+  const onSendToCherry = () => {
+    setPage('CUSTODY_CHECK')
+  }
+
+  const onSendToWallet = async () => {
+    if (environment.demoClaim) {
+      debug('Demo mode: progressing to next step: DONE')
+      setPage('DONE')
+      setClaimedTokenId(1)
+      return
+    }
+    setClaiming(true)
+
+    const res = await fetch('/api/claim', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: onboard.address,
+        key: keyhash,
+      }),
+    })
+
+    try {
+      const { tokenId, tx } = await res.json()
+      setTxValue(tx)
+      setClaimedTokenId(tokenId)
+      addOwnedFragment(tokenId)
+
+      // TODO: think about animation
+      setPage('DONE')
+    } catch (err) {
+      console.error(err)
+    }
+
+    setClaiming(false)
   }
 
   const onKeepInCherrysVault = async () => {
-    const keyphraseHash = ethers.utils.id(password)
+    if (environment.demoClaim) {
+      debug('Demo mode: progressing to next step: DONE')
+      setPage('DONE')
+      setClaimedTokenId(1)
+      return
+    }
 
-    // TODO: check how well account only now connecting is handled
     const res = await fetch('/api/claim', {
       method: 'POST',
       body: {
         to: 'vault',
-        key: keyphraseHash,
+        key: keyhash,
       },
     })
 
-    // TODO: check typing on tokenId
     const { tokenId, tx } = await res.json()
     setTxValue(tx)
-    setTokenIdValue(tokenId)
-    addClaimedPiece(tokenId)
-
-    // TODO: think about animation
-    setPage('DONE')
-  }
-
-  const onSendToWallet = async () => {
-    const keyphraseHash = ethers.utils.id(password)
-
-    if (!onboard.isWalletSelected) {
-      // TODO: catch cancelling sign in
-      try {
-        await onboard.selectWallet()
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    // TODO: check how well account only now connecting is handled
-    const res = await fetch('/api/claim', {
-      method: 'POST',
-      body: {
-        to: onboard.address,
-        key: keyphraseHash,
-      },
-    })
-
-    // TODO: check typing on tokenId
-    const { tokenId, tx } = await res.json()
-    setTxValue(tx)
-    setTokenIdValue(tokenId)
-    addClaimedPiece(tokenId)
+    setClaimedTokenId(tokenId)
+    addOwnedFragment(tokenId)
 
     // TODO: think about animation
     setPage('DONE')
   }
 
   return (
-    <CenterWrapper>
+    <Container>
       {page === 'PASSWORD' && (
-        <Container>
-          <Square></Square>
-          <Headline>Claim your holiday gift.</Headline>
-          <InputRow>
-            <Input
-              placeholder="Enter your password"
-              defaultValue={password}
-              onChange={(event) => setPassword(event.target.value)}
-            ></Input>
+        <>
+          <GiftboxImage src="/giftbox.jpg" alt="Giftbox" />
+          <Headline>
+            Claim your <em>holiday</em> gift.
+          </Headline>
+          <PasswordForm onSubmit={onSubmitPassword}>
+            <Input placeholder="Enter your password" defaultValue={password} onChange={onPasswordUpdate}></Input>
             <Submit onClick={onSubmitPassword}>
-              <FaChevronRight style={{ height: '30px' }} />
+              <img src="/arrow.svg" alt="" />
             </Submit>
-          </InputRow>
-          {error === 'PASSWORD' && <ErrorField>Wrong password!</ErrorField>}
-        </Container>
+          </PasswordForm>
+          {error === 'PASSWORD' && (
+            <ErrorField>
+              Oops, <span style={{ fontFamily: 'initial' }}>that</span> one wasn't in Santa's books...
+            </ErrorField>
+          )}
+          {error === 'CLAIMED' && (
+            <ErrorField>
+              Oops, this one's already been claimed!
+              <br />
+              Santa can't just print these out like Powell can!
+            </ErrorField>
+          )}
+          {error === 'UNKNOWN' && (
+            <ErrorField>Oops, we're not sure what went wrong but the holiday elves are on it!</ErrorField>
+          )}
+        </>
       )}
       {page === 'CLAIM' && (
-        <Container>
-          <Headline>Santa's on his way!</Headline>
+        <>
+          <Headline css={{ marginTop: '80px' }}>
+            Santa's <em>on his way!</em>
+          </Headline>
           <Text>He just needs to know where to drop it off!</Text>
-          <InputRow>
-            <Button type="secondary" onClick={onKeepInCherrysVault}>
+          <ButtonRow>
+            <Button type="secondary" onClick={onSendToCherry}>
               Keep in Cherry's vault
             </Button>
-            <Button onClick={onSendToWallet}>Send to wallet</Button>
-          </InputRow>
-          <Text>
-            Don't have a wallet yet? <a href="">Install one</a>.
+            <Button disabled={claiming} onClick={onboard.isWalletSelected ? onSendToWallet : connectToWallet}>
+              {onboard.isWalletSelected ? 'Send to wallet' : 'Connect wallet'}
+            </Button>
+          </ButtonRow>
+          <Text css={{ marginTop: '10px' }}>
+            Don't have a wallet yet?{' '}
+            <InstallWalletLink href="https://ethereum.org/en/wallets">Install one</InstallWalletLink>.
           </Text>
-        </Container>
+        </>
       )}
       {page === 'CUSTODY_CHECK' && (
-        <Container>
-          <Headline>Secured by your finest</Headline>
-        </Container>
+        <>
+          <Headline>
+            Thanks for your trust, <em>you're in good hands</em>
+          </Headline>
+          <TeamImage src="/custody.jpg" alt="Your finest custodians" />
+          <Text css={{ fontSize: '14px', marginBottom: '5px' }}>
+            Please contact us with this password if you'd like us to return it:
+          </Text>
+          <Text css={{ fontSize: '14px', opacity: 0.5, marginBottom: '30px' }}>{password}</Text>
+          <ButtonRow css={{ maxWidth: '150px', marginBottom: '50px' }}>
+            <Button onClick={onKeepInCherrysVault}>Let's gooo</Button>
+          </ButtonRow>
+        </>
       )}
       {page === 'DONE' && (
-        <Container>
-          <Headline>Your fragment</Headline>
+        <>
+          <Headline>
+            Hohoho, look what <em>Santa</em> brought!
+          </Headline>
           <FragmentContainer>
-            <Fragment src={`thumbs/${environment.fragmentMapping[tokenIdValue]}.jpg`} />
-            {/*<InfoComponent headline={`#${tokenIdValue} / 777`} />*/}
+            <Fragment src={`full_frames/${environment.fragmentMapping[claimedTokenId]}.jpg`} />
+            {/*<InfoComponent headline={`#${claimedTokenId} / 777`} />*/}
+            <Link href="/" passHref>
+              <GalleryLink>
+                View collection
+                <img style={{ display: 'inline-block', height: '12px', marginLeft: '10px' }} src="/arrow.svg" alt="" />
+              </GalleryLink>
+            </Link>
           </FragmentContainer>
-        </Container>
+        </>
       )}
-    </CenterWrapper>
+    </Container>
   )
 }

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   }
 
   const to = req.body?.to || ''
-  if (!to || !ethers.utils.isAddress(to) || to !== 'vault') {
+  if (!to || (!ethers.utils.isAddress(to) && to !== 'vault')) {
     res.status(400).end(`To Parameter ${to} Not An Address Or Vault`)
     return
   }

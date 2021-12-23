@@ -54,7 +54,7 @@ export default function Layout({ children }) {
     <div>
       <Header>
         <a href="https://cherry.vc">
-          <CherryLogo src="cherry_logo.png" />
+          <CherryLogo src="cherry_logo.png" alt="Logo" />
         </a>
         <NavContainer>
           <Link href="/" passHref>

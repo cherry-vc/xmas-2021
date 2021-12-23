@@ -80,6 +80,12 @@ const globalStyles = globalCss({
       outline: 'none',
     },
   },
+
+  input: {
+    '&:focus, &:focus-visible': {
+      outline: 'none',
+    },
+  }
 })
 
 export default globalStyles

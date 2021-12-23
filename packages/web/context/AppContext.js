@@ -57,7 +57,7 @@ export function AppProvider({ children }) {
 
   // Useful to "optimistically" add new fragments to an owner
   const addOwnedFragment = (newTokenId) => {
-    const newOwnedPieces = [...new Set(ownedFragments.concat(ownedPieceId))]
+    const newOwnedPieces = new Set([...ownedFragments].concat(newTokenId))
     setOwnedFragments(newOwnedPieces)
   }
 
@@ -65,7 +65,7 @@ export function AppProvider({ children }) {
     if (onboard.address) {
       fetch(`/api/fragment/${onboard.address}`).then((res) => {
         res.json().then(({ tokens }) => {
-          setOwnedFragments(new Set(tokens))
+          setOwnedFragments(new Set(tokens.map((id) => parseInt(id, '10'))))
         })
       })
     } else {
