@@ -16,7 +16,7 @@ export function AppProvider({ children }) {
   // Useful to "optimistically" add new fragments to an owner
   const addOwnedFragment = (newTokenId) => {
     const newOwnedPieces = [...new Set(ownedFragments.concat(ownedPieceId))]
-    setOwnedPieces(newOwnedPieces)
+    setOwnedFragments(newOwnedPieces)
   }
 
   useEffect(() => {
