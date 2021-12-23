@@ -15,6 +15,9 @@ export default async function handler(req, res) {
   }
 
   const tokens = await contracts.nft.allTokens()
-  const formattedTokens = tokens.sort(sortBn).map((id) => id.toString())
+  const formattedTokens = [...tokens]
+    .sort(sortBn)
+    .map((id) => id.toString())
+    .filter((id) => !!id) // filter out 0 since token id 0 is reserved
   res.status(200).json({ tokens: formattedTokens })
 }
