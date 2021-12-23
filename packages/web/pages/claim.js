@@ -1,6 +1,7 @@
-import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { FaChevronRight } from 'react-icons/fa'
+import ethers from 'ethers'
 
 import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
@@ -31,7 +32,7 @@ const Headline = styled('h1', {
 })
 
 const Text = styled('p', {
-  color: '#000000',
+  color: '$black',
   margin: '0 0 32px 0',
 })
 
@@ -47,7 +48,7 @@ const Input = styled('input', {
   height: '32px',
   fontSize: '18px',
   backgroundColor: 'transparent',
-  borderBottom: '1px solid #D8D8D8',
+  borderBottom: '1px solid $grey',
   width: '100%',
 })
 
@@ -59,8 +60,8 @@ const Submit = styled('button', {
 const Button = styled('button', {
   height: '30px',
   margin: 0,
-  color: 'white',
-  backgroundColor: '#E64980',
+  color: '$white',
+  backgroundColor: '$cherry',
   border: 'none',
   flex: '1 1 0px',
   cursor: 'pointer',
@@ -68,8 +69,8 @@ const Button = styled('button', {
   variants: {
     type: {
       secondary: {
-        color: 'black',
-        backgroundColor: 'white',
+        color: '$black',
+        backgroundColor: '$white',
       },
     },
     state: {
@@ -99,12 +100,14 @@ const Fragment = styled('img', {
 })
 
 export default function Claim() {
-  const { addOwnedPiece, onboard } = useApp()
+  const { onboard, addOwnedPiece } = useApp()
+  const [page, setPage] = useState('PASSWORD') // PASSWORD, CLAIM, CUSTODY_CHECK, DONE
+
   const [password, setPassword] = useState('')
-  const [txValue, setTxValue] = useState('')
+  const [error, setError] = useState(null) // PASSWORD, CLAIMED, UNKNOWN
   const [tokenIdValue, setTokenIdValue] = useState(-1)
-  const [isWrongPassword, setWrongPassword] = useState(false)
-  const [page, setPage] = useState('PASSWORD', 'CLAIM', 'DONE')
+  const [txValue, setTxValue] = useState('')
+
   const { query } = useRouter()
 
   useEffect(() => {
@@ -113,47 +116,98 @@ export default function Claim() {
     }
   }, [query])
 
-  const onSubmitPassword = async (event) => {
-    event.preventDefault()
-    try {
-      const res = await fetch('/api/claim', {
-        method: 'POST',
-        body: {
-          key: password,
-        },
-      })
-
-      const { tokenId, tx } = await res.json()
-      if (tokenId > 0) {
-        setTxValue(tx)
-        setTokenIdValue(tokenId)
-        setPage('CLAIM')
-        return
-      }
-    } catch (error) {}
-    setWrongPassword(true)
+  const onPasswordUpdate = async (event) => {
+    setPassword(event.target.value)
+    if (error) {
+      setError(null)
+    }
   }
 
-  const onKeepInCherrysVault = () => {
-    // TODO: call API
-    console.log('KeepInCherrysVault')
-    addOwnedPiece(tokenIdValue)
+  const onSubmitPassword = async (event) => {
+    event.preventDefault()
+
+    // The hash of the password is used in the merkle node
+    const keyphraseHash = ethers.utils.id(password)
+    // The double hash of the password is used as the merkle leaf map's key
+    const leafMapKey = ethers.utils.id(keyphraseHash)
+
+    const merkleConfig = environment.merkle
+    const leafMapNode = merkleConfig.leafMap.get(leafMapKey)
+
+    if (!leafMapNode) {
+      setError('PASSWORD')
+      return
+    }
+
+    let previouslyClaimed
+    try {
+      const res = await fetch(`/api/claimed/${keyphraseHash}`)
+      const { claimed: previouslyClaimed } = await res.json()
+    } catch (err) {
+      setError('UNKNOWN')
+      return
+    }
+
+    if (claimed) {
+      setError('CLAIMED')
+      return
+    }
+
+    // Otherwise, this password is legit and we can move on!
+    setPage('CLAIM')
+  }
+
+  const onKeepInCherrysVault = async () => {
+    const keyphraseHash = ethers.utils.id(password)
+
+    // TODO: check how well account only now connecting is handled
+    const res = await fetch('/api/claim', {
+      method: 'POST',
+      body: {
+        to: 'vault',
+        key: keyphraseHash,
+      },
+    })
+
+    // TODO: check typing on tokenId
+    const { tokenId, tx } = await res.json()
+    setTxValue(tx)
+    setTokenIdValue(tokenId)
+    addClaimedPiece(tokenId)
+
+    // TODO: think about animation
     setPage('DONE')
   }
 
   const onSendToWallet = async () => {
-    if (onboard.isWalletSelected) {
-      // TODO: call API
-      console.log('SendToWallet')
-      addClaimedPiece(tokenIdValue)
-      setPage('DONE')
-    } else {
+    const keyphraseHash = ethers.utils.id(password)
+
+    if (!onboard.isWalletSelected) {
+      // TODO: catch cancelling sign in
       try {
         await onboard.selectWallet()
       } catch (error) {
         console.error(error)
       }
     }
+
+    // TODO: check how well account only now connecting is handled
+    const res = await fetch('/api/claim', {
+      method: 'POST',
+      body: {
+        to: onboard.address,
+        key: keyphraseHash,
+      },
+    })
+
+    // TODO: check typing on tokenId
+    const { tokenId, tx } = await res.json()
+    setTxValue(tx)
+    setTokenIdValue(tokenId)
+    addClaimedPiece(tokenId)
+
+    // TODO: think about animation
+    setPage('DONE')
   }
 
   return (
@@ -172,7 +226,7 @@ export default function Claim() {
               <FaChevronRight style={{ height: '30px' }} />
             </Submit>
           </InputRow>
-          {isWrongPassword && <ErrorField>Wrong password!</ErrorField>}
+          {error === 'PASSWORD' && <ErrorField>Wrong password!</ErrorField>}
         </Container>
       )}
       {page === 'CLAIM' && (
@@ -180,16 +234,19 @@ export default function Claim() {
           <Headline>Santa's on his way!</Headline>
           <Text>He just needs to know where to drop it off!</Text>
           <InputRow>
-            <Button type="secondary" onClick={() => onKeepInCherrysVault()}>
+            <Button type="secondary" onClick={onKeepInCherrysVault}>
               Keep in Cherry's vault
             </Button>
-            <Button onClick={() => onSendToWallet()}>
-              {onboard.isWalletSelected ? 'Send to wallet' : 'Connect to wallet'}
-            </Button>
+            <Button onClick={onSendToWallet}>Send to wallet</Button>
           </InputRow>
           <Text>
-            Don't have a wallet yet? <a href="">Install one</a>
+            Don't have a wallet yet? <a href="">Install one</a>.
           </Text>
+        </Container>
+      )}
+      {page === 'CUSTODY_CHECK' && (
+        <Container>
+          <Headline>Secured by your finest</Headline>
         </Container>
       )}
       {page === 'DONE' && (
