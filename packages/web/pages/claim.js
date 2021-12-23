@@ -165,14 +165,12 @@ export default function Claim() {
     try {
       const res = await fetch(`/api/claimed/${leafMapNode.leaf}`)
       const { claimed } = await res.json()
-      console.log('claimed', claimed)
 
       if (claimed) {
         setError('CLAIMED')
         return
       }
     } catch (err) {
-      console.log(err)
       setError('UNKNOWN')
       return
     }
@@ -231,10 +229,13 @@ export default function Claim() {
 
     const res = await fetch('/api/claim', {
       method: 'POST',
-      body: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         to: 'vault',
         key: keyhash,
-      },
+      }),
     })
 
     const { tokenId, tx } = await res.json()
