@@ -111,8 +111,8 @@ const FragmentContainer = styled('div', {
 })
 
 const Fragment = styled('img', {
-  minWidth: '100px',
-  maxWidth: '400px',
+  minHeight: '100px',
+  maxHeight: '400px',
 })
 
 const GalleryLink = styled('a', {
