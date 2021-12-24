@@ -144,7 +144,8 @@ const FragmentId = styled('div', {
   color: '$white',
   width: '28px',
   height: '25px',
-  paddingTop: '2px',
+  fontSize: '14px',
+  paddingTop: '3px',
   textAlign: 'center',
   variants: {
     type: {
