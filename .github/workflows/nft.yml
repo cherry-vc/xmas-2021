@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: 'packages/nft/**'
+    working-directory: 'packages/nft/'
 
 jobs:
   CI:
@@ -27,7 +27,7 @@ jobs:
       run: npm ci
     - name: Lint
       run: npm run lint
-    - name: compile
+    - name: Compile
       run: npm run compile
 
 env:

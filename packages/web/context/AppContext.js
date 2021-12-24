@@ -16,16 +16,16 @@ export function AppProvider({ children }) {
       walletSelect: {
         wallets: [
           { walletName: 'metamask', preferred: true },
-          /* TODO: re-enable
+          { walletName: 'tally', preferred: true },
           {
             walletName: 'walletConnect',
             rpc: {
-              ['137']: 'https://polygon-rpc.com/',
-              ['80001']: 'https://rpc-mumbai.maticvigil.com',
+              1: 'https://cloudflare-eth.com/',
+              137: 'https://polygon-rpc.com/',
+              80001: 'https://rpc-mumbai.maticvigil.com',
             },
             preferred: true,
           },
-          */
           { walletName: 'coinbase', preferred: true },
           { walletName: 'trust', preferred: true },
         ],
@@ -34,13 +34,18 @@ export function AppProvider({ children }) {
   })
 
   const connectToWallet = async () => {
+    const onboardInstance = onboard.onboard
+
+    // use-onboard likes to reset the config back to ETH mainnet and dark mode :(
+    // https://github.com/talentlessguy/use-onboard/blob/v0.3.0/src/index.ts#L82
+    onboardInstance.config({ darkMode: false })
+
     try {
       // Try fetching current wallet's network to avoid asking them to switch it
       if (window.ethereum) {
         const rawCurrentChainId = await window.ethereum.request({ method: 'eth_chainId' })
         const currentChainId = ethers.BigNumber.from(rawCurrentChainId).toNumber()
         if (currentChainId) {
-          const onboardInstance = onboard.onboard
           onboardInstance.config({ networkId: currentChainId })
         }
       }

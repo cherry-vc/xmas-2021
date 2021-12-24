@@ -165,14 +165,12 @@ export default function Claim() {
     try {
       const res = await fetch(`/api/claimed/${leafMapNode.leaf}`)
       const { claimed } = await res.json()
-      console.log('claimed', claimed)
 
       if (claimed) {
         setError('CLAIMED')
         return
       }
     } catch (err) {
-      console.log(err)
       setError('UNKNOWN')
       return
     }
@@ -206,19 +204,14 @@ export default function Claim() {
       }),
     })
 
-    try {
-      const { tokenId, tx } = await res.json()
-      setTxValue(tx)
-      setClaimedTokenId(tokenId)
-      addOwnedFragment(tokenId)
-
-      // TODO: think about animation
-      setPage('DONE')
-    } catch (err) {
-      console.error(err)
-    }
-
+    const { tokenId, tx } = await res.json()
     setClaiming(false)
+    setTxValue(tx)
+    setClaimedTokenId(tokenId)
+    addOwnedFragment(tokenId)
+
+    // TODO: think about animation
+    setPage('DONE')
   }
 
   const onKeepInCherrysVault = async () => {
@@ -228,16 +221,21 @@ export default function Claim() {
       setClaimedTokenId(1)
       return
     }
+    setClaiming(true)
 
     const res = await fetch('/api/claim', {
       method: 'POST',
-      body: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         to: 'vault',
         key: keyhash,
-      },
+      }),
     })
 
     const { tokenId, tx } = await res.json()
+    setClaiming(false)
     setTxValue(tx)
     setClaimedTokenId(tokenId)
     addOwnedFragment(tokenId)
@@ -308,7 +306,7 @@ export default function Claim() {
           </Text>
           <Text css={{ fontSize: '14px', opacity: 0.5, marginBottom: '30px' }}>{password}</Text>
           <ButtonRow css={{ maxWidth: '150px', marginBottom: '50px' }}>
-            <Button onClick={onKeepInCherrysVault}>Let's gooo</Button>
+            <Button disabled={claiming} onClick={onKeepInCherrysVault}>Let's gooo</Button>
           </ButtonRow>
         </>
       )}

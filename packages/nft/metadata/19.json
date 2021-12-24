@@ -1,0 +1,48 @@
+{
+  "description": "Single frame of animation (19 / 777)\n\nCherry Ventures x Owi Sixseven",
+  "external_url": "https://xmas-2021.cherry.vc/fragments/19",
+  "image": "ipfs://QmSv1DCLNU4suFQieNrVh3bRJcMzL2HivCanfxfRFnU6Ws/19.jpg",
+  "name": "Fragment #19",
+  "attributes": [
+    {
+      "trait_type": "Left wall, top panel",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Left wall, middle panel",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Left wall, bottom panel",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Center wall, top panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Center wall, middle panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Center wall, bottom panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Right wall, top panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Right wall, middle panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Right wall, bottom panel",
+      "value": "Off"
+    },
+    {
+      "trait_type": "Lights on",
+      "value": 3
+    }
+  ]
+}

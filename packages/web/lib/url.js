@@ -14,11 +14,7 @@ if (envvars.chain === 'polygon') {
 }
 
 export function buildOpenseaAssetUrl(tokenId) {
-  if (tokenId) {
-    assetBaseUrl = `${assetBaseUrl}/${tokenId}`
-  }
-
-  return assetBaseUrl
+  return `${assetBaseUrl}/${tokenId}`
 }
 
 export { openseaCollectionBaseUrl }

@@ -36,7 +36,7 @@ const Video = styled('video', {
   display: 'block',
   width: '100%',
   minWidth: '100px',
-  maxWidth: '450px',
+  maxWidth: '460px',
   paddingRight: '25px',
 })
 
@@ -71,11 +71,19 @@ const Text = styled('p', {
   },
 })
 
-const SubTextLinks = styled('p', {
+const TextLink = styled(SafeLink, {
+  opacity: 0.5,
+  lineHeight: 1.5,
+})
+
+const SubText = styled('p', {
   opacity: 0.5,
   lineHeight: 1.5,
   fontSize: '12px',
-  fontFamily: '$italic',
+})
+
+const DetailTable = styled('table', {
+  fontSize: '14px',
 })
 
 const SubHeadline = styled('h3', {
@@ -136,7 +144,8 @@ const FragmentId = styled('div', {
   color: '$white',
   width: '28px',
   height: '25px',
-  paddingTop: '2px',
+  fontSize: '14px',
+  paddingTop: '3px',
   textAlign: 'center',
   variants: {
     type: {
@@ -178,12 +187,15 @@ export default function Home() {
             <em>Holidays</em> 2021.
           </Headline>
           <Text css={{ marginBottom: '15px' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur.
+            "The Unicorn" explores the possibility of highlighting its powerful image within an aseptic and neutral
+            space. The light that Cherry emits reflects and impacts directly on the creation and contemplation of this
+            icon. Creating a direct connection between admiration and respect for this mythological figure.
           </Text>
-          <SubTextLinks css={{ marginBottom: '15px' }}>
+          <SubText css={{ marginBottom: '15px' }}>
+            A special showpiece for the holidays, created with the intention of celebrating and sharing what has been
+            achieved in 2021. Commission and royalty proceeds committed to a charitable cause.
+          </SubText>
+          <SubText css={{ fontFamily: '$italic', marginBottom: '15px' }}>
             <SafeLink href="sale-and-license-rarible-variant-e.pdf" style={{ marginRight: '5px' }}>
               Terms
             </SafeLink>
@@ -193,16 +205,16 @@ export default function Home() {
             <SafeLink href="https://github.com/cherry-vc/xmas-2021/" style={{ marginRight: '5px' }}>
               Github
             </SafeLink>
-          </SubTextLinks>
-          <Separator style={{ margin: '25px 0' }} />
-          <table>
+          </SubText>
+          <Separator style={{ margin: '20px 0' }} />
+          <DetailTable>
             <tbody>
               <tr>
                 <td>
                   <Text type="label">Artist:</Text>
                 </td>
                 <td>
-                  <Text>Owi SixSeven</Text>
+                  <TextLink href="https://theartofvisual.com">Owi Sixseven</TextLink>
                 </td>
               </tr>
               <tr>
@@ -213,8 +225,16 @@ export default function Home() {
                   <Text>2021</Text>
                 </td>
               </tr>
+              <tr>
+                <td>
+                  <Text type="label">Royalties:</Text>
+                </td>
+                <td>
+                  <Text>10%</Text>
+                </td>
+              </tr>
             </tbody>
-          </table>
+          </DetailTable>
         </Information>
       </Container>
       <FragmentsContainer>
@@ -233,7 +253,7 @@ export default function Home() {
             </>
           )
         ) : (
-          <Fragments>
+          <Fragments css={{ justifyContent: 'flex-start' }}>
             {fragments
               .filter(({ tokenId }) => ownedFragments.has(tokenId))
               .map(({ tokenId, src, url }, index) => (
