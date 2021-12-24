@@ -254,6 +254,7 @@ export default function Claim() {
     }
   }, [claiming, playSoundtrack])
 
+  const displayAddr = !!onboard.address ? `${onboard.address.slice(0, 6)}…${onboard.address.slice(-4)}` : ''
   const displayTxHash = !!txHash ? `${txHash.substring(0, 36)}…` : ''
 
   return (
@@ -298,7 +299,7 @@ export default function Claim() {
               Keep in Cherry's vault
             </Button>
             <Button disabled={claiming} onClick={onboard.isWalletSelected ? onSendToWallet : connectToWallet}>
-              {onboard.isWalletSelected ? 'Send to wallet' : 'Connect wallet'}
+              {onboard.isWalletSelected ? `Send to ${displayAddr}` : 'Connect wallet'}
             </Button>
           </ButtonRow>
           <p style={{ marginTop: '10px' }}>

@@ -246,10 +246,10 @@ export default function Home() {
         </HeadlineContainer>
         {ownedFragments.size === 0 ? (
           onboard.isWalletSelected ? (
-            <Text>You don't own any fragments yet</Text>
+            <Text>You don't own any fragments yet.</Text>
           ) : (
             <>
-              <Text style={{ display: 'inline' }}>You haven't connected your wallet yet</Text>
+              <Text style={{ display: 'inline' }}>You haven't connected your wallet yet.</Text>
             </>
           )
         ) : (
