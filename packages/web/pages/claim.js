@@ -8,29 +8,26 @@ import { styled } from '../stitches.config'
 import SafeLink from '../components/SafeLink'
 import { useApp } from '../context/AppContext'
 import environment from '../environment/web'
+import { buildBlockExplorerTxLink } from '../lib/url'
 import { debug } from '../lib/utils'
 
 const Container = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+  marginBottom: '32px',
   padding: '0 $pagePadding',
   paddingTop: '40px',
 })
 
 const GiftboxImage = styled('img', {
-  width: '450px',
+  height: '337px',
   marginBottom: '32px',
 })
 
 const Headline = styled('h1', {
   textAlign: 'center',
   marginBottom: '30px',
-})
-
-const Text = styled('p', {
-  color: '$black',
-  margin: '0 0 32px 0',
 })
 
 const PasswordForm = styled('form', {
@@ -100,7 +97,7 @@ const InstallWalletLink = styled(SafeLink, {
 })
 
 const TeamImage = styled('img', {
-  width: '600px',
+  height: '367px',
   marginBottom: '32px',
 })
 
@@ -129,7 +126,7 @@ export default function Claim() {
   const [error, setError] = useState(null) // PASSWORD, CLAIMED, UNKNOWN
   const [claiming, setClaiming] = useState(false)
   const [claimedTokenId, setClaimedTokenId] = useState(-1)
-  const [txValue, setTxValue] = useState('')
+  const [txHash, setTxHash] = useState('')
 
   const { query } = useRouter()
 
@@ -206,7 +203,7 @@ export default function Claim() {
 
     const { tokenId, tx } = await res.json()
     setClaiming(false)
-    setTxValue(tx)
+    setTxHash(tx)
     setClaimedTokenId(tokenId)
     addOwnedFragment(tokenId)
 
@@ -236,13 +233,15 @@ export default function Claim() {
 
     const { tokenId, tx } = await res.json()
     setClaiming(false)
-    setTxValue(tx)
+    setTxHash(tx)
     setClaimedTokenId(tokenId)
     addOwnedFragment(tokenId)
 
     // TODO: think about animation
     setPage('DONE')
   }
+
+  const displayTxHash = !!txHash ? `${txHash.substring(0, 36)}…` : ''
 
   return (
     <Container>
@@ -280,7 +279,7 @@ export default function Claim() {
           <Headline css={{ marginTop: '80px' }}>
             Santa's <em>on his way!</em>
           </Headline>
-          <Text>He just needs to know where to drop it off!</Text>
+          <p style={{ marginBottom: '32px' }}>He just needs to know where to drop it off!</p>
           <ButtonRow>
             <Button type="secondary" onClick={onSendToCherry}>
               Keep in Cherry's vault
@@ -289,10 +288,10 @@ export default function Claim() {
               {onboard.isWalletSelected ? 'Send to wallet' : 'Connect wallet'}
             </Button>
           </ButtonRow>
-          <Text css={{ marginTop: '10px' }}>
+          <p style={{ marginTop: '10px' }}>
             Don't have a wallet yet?{' '}
             <InstallWalletLink href="https://ethereum.org/en/wallets">Install one</InstallWalletLink>.
-          </Text>
+          </p>
         </>
       )}
       {page === 'CUSTODY_CHECK' && (
@@ -301,11 +300,11 @@ export default function Claim() {
             Thanks for your trust, <em>you're in good hands</em>
           </Headline>
           <TeamImage src="/custody.jpg" alt="Your finest custodians" />
-          <Text css={{ fontSize: '14px', marginBottom: '5px' }}>
+          <p style={{ fontSize: '14px', marginBottom: '5px' }}>
             Please contact us with this password if you'd like us to return it:
-          </Text>
-          <Text css={{ fontSize: '14px', opacity: 0.5, marginBottom: '30px' }}>{password}</Text>
-          <ButtonRow css={{ maxWidth: '150px', marginBottom: '50px' }}>
+          </p>
+          <p style={{ fontSize: '14px', opacity: 0.5, marginBottom: '32px' }}>{password}</p>
+          <ButtonRow css={{ maxWidth: '150px' }}>
             <Button disabled={claiming} onClick={onKeepInCherrysVault}>
               Let's gooo
             </Button>
@@ -327,6 +326,12 @@ export default function Claim() {
               </GalleryLink>
             </Link>
           </FragmentContainer>
+          <p style={{ fontSize: '12px', opacity: 0.5 }}>
+            Mint transaction (Polygon): <SafeLink href={buildBlockExplorerTxLink(txHash)}>{displayTxHash}</SafeLink>
+          </p>
+          <p style={{ fontSize: '12px', opacity: 0.5 }}>
+            Asset may take a few minutes to appear on marketplaces such as Opensea
+          </p>
         </>
       )}
     </Container>
