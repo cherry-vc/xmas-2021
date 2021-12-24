@@ -1,11 +1,12 @@
 import { ethers } from 'ethers'
+import { withSentry } from '@sentry/nextjs'
 
 import environment, { setupEthers } from '../../environment/api'
 
 const merkleConfig = environment.merkle
 const { contracts, minter } = setupEthers()
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   const { method } = req
 
   if (method !== 'POST') {
@@ -68,3 +69,5 @@ export default async function handler(req, res) {
     res.status(200).json({ tokenId, tx: tx.hash })
   }
 }
+
+export default withSentry(handler)

@@ -1,11 +1,12 @@
 import { ethers } from 'ethers'
+import { withSentry } from '@sentry/nextjs'
 
 import environment, { setupEthers } from '../../../environment/api'
 import { sortBn } from '../../../lib/utils'
 
 const { contracts } = setupEthers()
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   const { method } = req
 
   if (method !== 'GET') {
@@ -27,3 +28,5 @@ export default async function handler(req, res) {
     .filter((id) => !!id) // filter out 0 since token id 0 is reserved
   res.status(200).json({ tokens: formattedTokens })
 }
+
+export default withSentry(handler)

@@ -1,10 +1,11 @@
 import { ethers } from 'ethers'
+import { withSentry } from '@sentry/nextjs'
 
 import environment, { setupEthers } from '../../../environment/api'
 
 const { contracts } = setupEthers()
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   const { method } = req
 
   if (method !== 'GET') {
@@ -17,3 +18,5 @@ export default async function handler(req, res) {
   const claimed = await contracts.nft.claimed(key)
   res.status(200).json({ claimed })
 }
+
+export default withSentry(handler)
