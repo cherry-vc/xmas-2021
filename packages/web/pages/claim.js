@@ -306,7 +306,9 @@ export default function Claim() {
           </Text>
           <Text css={{ fontSize: '14px', opacity: 0.5, marginBottom: '30px' }}>{password}</Text>
           <ButtonRow css={{ maxWidth: '150px', marginBottom: '50px' }}>
-            <Button disabled={claiming} onClick={onKeepInCherrysVault}>Let's gooo</Button>
+            <Button disabled={claiming} onClick={onKeepInCherrysVault}>
+              Let's gooo
+            </Button>
           </ButtonRow>
         </>
       )}
