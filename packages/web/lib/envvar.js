@@ -4,7 +4,7 @@ const chain = (process.env.NEXT_PUBLIC_CHAIN || '').toLowerCase()
 const blockNativeApi = process.env.NEXT_PUBLIC_BLOCKNATIVE_API_KEY || ''
 
 // Not accessable on web
-const polygonNodeUrl = process.env.PUBLIC_POLYGON_NODE_URL || ''
+const polygonNodeUrl = process.env.POLYGON_NODE_URL || ''
 const mumbaiNodeUrl = process.env.MUMBAI_NODE_URL || ''
 const minterKey = process.env.MINTER_KEY || ''
 

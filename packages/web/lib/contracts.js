@@ -1,7 +1,10 @@
 import nftAbi from './abi/cherryXmasNft2021'
 
 export const polygon = {
-  // TODO
+  nft: {
+    address: '0x5eadc8de9645160c43193cbbcebb35c3c87e037d',
+    abi: nftAbi,
+  },
 }
 
 export const mumbai = {
