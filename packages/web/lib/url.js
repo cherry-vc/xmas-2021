@@ -15,7 +15,8 @@ if (envvars.chain === 'polygon') {
 
   const nftAddress = contracts.polygon.nft.address
   opensea.assetBaseUrl = `https://opensea.io/assets/matic/${nftAddress}`
-  opensea.collectionBaseUrl = 'https://opensea.io/collection/cherry-xmas-2021'
+  opensea.collectionBaseUrl =
+    'https://opensea.io/collection/cherry-xmas-2021?search[sortAscending]=false&search[sortBy]=VIEWER_COUNT'
 } else if (envvars.chain === 'mumbai') {
   blockExplorer.txBaseUrl = 'https://mumbai.polygonscan.com/tx'
 
