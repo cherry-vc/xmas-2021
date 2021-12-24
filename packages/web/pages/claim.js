@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaChevronRight } from 'react-icons/fa'
+import useSound from 'use-sound'
 import { ethers } from 'ethers'
 
 import { styled } from '../stitches.config'
 import SafeLink from '../components/SafeLink'
 import { useApp } from '../context/AppContext'
 import environment from '../environment/web'
+import sounds from '../lib/sounds'
 import { buildBlockExplorerTxLink } from '../lib/url'
 import { debug } from '../lib/utils'
 
@@ -128,6 +130,10 @@ export default function Claim() {
   const [claimedTokenId, setClaimedTokenId] = useState(-1)
   const [txHash, setTxHash] = useState('')
 
+  const [playSoundtrack] = useSound(sounds.urls.trimmed, {
+    html5: true,
+  })
+
   const { query } = useRouter()
 
   useEffect(() => {
@@ -240,6 +246,13 @@ export default function Claim() {
     // TODO: think about animation
     setPage('DONE')
   }
+
+  // Play soundtrack when claiming
+  useEffect(() => {
+    if (claiming) {
+      playSoundtrack()
+    }
+  }, [claiming, playSoundtrack])
 
   const displayAddr = !!onboard.address ? `${onboard.address.slice(0, 6)}…${onboard.address.slice(-4)}` : ''
   const displayTxHash = !!txHash ? `${txHash.substring(0, 36)}…` : ''
