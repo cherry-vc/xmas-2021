@@ -3,7 +3,7 @@ import { styled } from '../stitches.config'
 import { useApp } from '../context/AppContext'
 import SafeLink from '../components/SafeLink'
 import environment from '../environment/web'
-import { buildOpenseaAssetUrl, openseaCollectionBaseUrl } from '../lib/url'
+import { buildOpenseaAssetUrl, opensea } from '../lib/url'
 
 const fragments = Object.entries(environment.fragmentMapping)
   .map((fragment) => {
@@ -199,7 +199,7 @@ export default function Home() {
             <SafeLink href="sale-and-license-rarible-variant-e.pdf" style={{ marginRight: '5px' }}>
               Terms
             </SafeLink>
-            <SafeLink href={openseaCollectionBaseUrl} style={{ marginRight: '5px' }}>
+            <SafeLink href={opensea.collectionBaseUrl} style={{ marginRight: '5px' }}>
               Opensea
             </SafeLink>
             <SafeLink href="https://github.com/cherry-vc/xmas-2021/" style={{ marginRight: '5px' }}>
