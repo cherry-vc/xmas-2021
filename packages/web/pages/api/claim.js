@@ -43,29 +43,31 @@ async function handler(req, res) {
   const { leaf, tokenId } = leafMapNode
   const proof = merkleConfig.tree.getHexProof(leaf)
 
+  const gasLimit = ethers.BigNumber.from(250000 + Math.floor(Math.random() * 5000))
+  const txOptions = { gasLimit }
   if (ethers.utils.isAddress(to)) {
     // Sanity check claim tx
     try {
-      await contracts.nft.connect(minter).callStatic.mint(to, tokenId, key, proof)
+      await contracts.nft.connect(minter).callStatic.mint(to, tokenId, key, proof, txOptions)
     } catch (err) {
       res.status(400).end('Claim Tx Failing')
       return
     }
 
     // Send claim tx
-    const tx = await contracts.nft.connect(minter).mint(to, tokenId, key, proof)
+    const tx = await contracts.nft.connect(minter).mint(to, tokenId, key, proof, txOptions)
     res.status(200).json({ tokenId, tx: tx.hash })
   } else if (to === 'vault') {
     // Sanity check claim tx
     try {
-      await contracts.nft.connect(minter).callStatic.mintToVault(tokenId, key, proof)
+      await contracts.nft.connect(minter).callStatic.mintToVault(tokenId, key, proof, txOptions)
     } catch (err) {
       res.status(400).end('Claim Tx Failing')
       return
     }
 
     // Send claim tx
-    const tx = await contracts.nft.connect(minter).mintToVault(tokenId, key, proof)
+    const tx = await contracts.nft.connect(minter).mintToVault(tokenId, key, proof, txOptions)
     res.status(200).json({ tokenId, tx: tx.hash })
   }
 }
